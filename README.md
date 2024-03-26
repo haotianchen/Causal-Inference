@@ -52,6 +52,12 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - [What’s Trending in Difference-in-Differences? A Synthesis of the Recent Econometrics Literature](https://arxiv.org/pdf/2201.01194.pdf) - Roth et al. (2023)
 - [A Practical Introduction to Regression Discontinuity Designs: Foundations](https://arxiv.org/pdf/1911.09511.pdf) & [A Practical Introduction to Regression Discontinuity Designs: Extensions](https://arxiv.org/pdf/2301.08958.pdf) - Cattaneo et al. (2019; 2023)
 - [Causal Models for Longitudinal and Panel Data: A Survey](https://www.nber.org/papers/w31942) - Arkhangelsky and Imbens (2023)
+- [Recent Developments in Causal Inference and Machine Learning](https://www.annualreviews.org/content/journals/10.1146/annurev-soc-030420-015345) - Brand et al. (2023)
 
-### Other Resources
+### Community
 - [Online Causal Inference Seminar](https://sites.google.com/view/ocis/home)
+
+### Industry Applications
+- [EconML by Microsoft](https://econml.azurewebsites.net/)
+- [CausalML by Uber](https://causalml.readthedocs.io/en/latest/about.html)
+- [DoubleML](https://docs.doubleml.org/stable/index.html)
