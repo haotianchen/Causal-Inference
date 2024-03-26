@@ -1,5 +1,7 @@
 # Causal Inference
 
+Reference materials and tutorials used in TA sections for the PhD-level Causal Inference course (PS200C, instructor: [Chad Hazlett](https://www.chadhazlett.com/)) offered in Spring 2024 at UCLA.
+
 
 ## Resources
 
@@ -8,7 +10,6 @@ The following is a list of Causal Inference resources
 - [Lectures Videos](#lecture-videos)
 - [Slides](#slides)
 - [Notes](#notes)
-
 
 
 ### Lecture Videos
