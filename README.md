@@ -1,10 +1,11 @@
 # Causal Inference
 
-Materials for the PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered in Spring 2024 at UCLA.
+Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered in Spring 2024 at UCLA.
 
 
 ## Resources
 
+### Courses
 - Stat286/Gov2003: Causal Inference with Application (Harvard)
   - **Instructor(s)**: Kosuke Imai
   - **Videos**: https://www.youtube.com/@imaikosuke/playlists
@@ -27,4 +28,3 @@ Materials for the PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazl
   - **Syllabus**: https://www.dhidalgo.me/teaching
 
 
- 
