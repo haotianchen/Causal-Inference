@@ -1,5 +1,4 @@
-# Causal-Inference
-
+# Causal Inference
 
 
 ## Resources
