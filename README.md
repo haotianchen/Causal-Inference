@@ -26,7 +26,7 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 
 - Stat 256: Causal Inference (UC Berkeley)
   - **Instructor(s)**: Peng Ding
-  - **Notes**: [A First Course in Causal Inference](https://arxiv.org/pdf/2305.18793.pdf) - Highly recommended!
+  - **Notes**: [A First Course in Causal Inference](https://arxiv.org/pdf/2305.18793.pdf) [[Python code](https://github.com/apoorvalal/ding_causalInference_python)][[R code](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ZX3VEV)] - Highly recommended!
 
 - STA 640: Causal Inference (Duke)
   - **Instructor(s)**: Fan Li
