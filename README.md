@@ -2,9 +2,11 @@
 
 Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered in 2024 Spring at UCLA.
 
+
 ## TA Notes
 1. [Math Review](https://iqss.github.io/prefresher/linearalgebra.html)
-2. Potential Outcomes(https://github.com/haotianchen/Causal-Inference/PO)
+2. [Potential Outcomes](https://github.com/haotianchen/Causal-Inference/tree/main/PO)
+
 
 ## Resources
 
