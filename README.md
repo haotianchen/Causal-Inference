@@ -4,7 +4,7 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 
 
 ## TA Notes
-1. [Math Review](https://iqss.github.io/prefresher/linearalgebra.html)
+1. [Math Review (Probability and Linear Algebra)](https://iqss.github.io/prefresher/linearalgebra.html) and [OLS in Matrix Form](https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf)
 2. [Potential Outcomes](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/PO/potential_outcomes.html)
 
 
