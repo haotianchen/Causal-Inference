@@ -1,1 +1,54 @@
+---
+title: '200C Section: Probability and Linear Algebra Review'
+author: 'Haotian (Barney) Chen'
+date: "April 5, 2024"
+output:
+  html_document: default
+---
+
+> I develop this document largely based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho.
+
+## Probability Theory
+
+### Simulation
+This is a hint for Problem Set 1, Problem 5. Run `help(distributions)` to see how to call on distributions in R. 
+
+For example, if we want to Draw n sample size r times from normal distribution, calculate mean of each draw (i.e., sample mean), and get an 80% confidence interval for the sample mean, then compute coverage rate (proportion of estimates that fall within confidence interval).
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+
+sample_mean_ci <- function(n, r, pars){
+  mu <- pars[1] #true mean is mu
+  replicate(r, { #use replicate function to do r times
+    samp <- rnorm(n, mean=pars[1], sd=sqrt(pars[2]))
+    data.frame(mean = mean(samp),
+               #using t-distribution confidence interval (CI)
+               lower = mean(samp) - sd(samp)/sqrt(n)*qt(1 - 0.2/2, length(samp)-1),
+               upper = mean(samp) + sd(samp)/sqrt(n)*qt(1 - 0.2/2, length(samp)-1))
+  }, simplify = FALSE) %>% bind_rows() %>%
+    rownames_to_column(var = "replicate") %>%
+    mutate(cover = lower < mu & upper > mu) %>% #coverage of true mean
+    mutate(coverage = mean(cover))
+}
+
+#store result: e.g., sample size 100, repeat 1000 times, Normal(1, 4)
+true_mean <- 1
+result <- sample_mean_ci(n=20, r=1000, pars=c(true_mean, 4))
+
+#plot the first 100 of these intervals: for illustration purposes
+ggplot(result, aes(x = lower, xend = upper, y = replicate, yend = replicate, col=cover)) +
+  #differentiate colors (`col`) based on `cover` indicating whether it contains true mean
+  geom_segment() + 
+  geom_vline(xintercept = true_mean) + #true mean here
+  annotate(geom="text", x=0.5, y=95, size=4, 
+           label=paste0("Coverage Rate:", round(result$coverage, 3)*100, "%")) +
+  #plot first 100 rows by `limits` + adjust y-axis ticks by `breaks`
+  scale_y_discrete(breaks = seq(25, 100, by=25), limits = seq(1, 100, by=1)) +
+  labs(title="80% Confidence Intervals for 100 random samples", x="Sample Mean", y="Replicate") +
+  scale_colour_discrete(name  ="Interval Covers Truth?") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+## Linear Algebra
 
