@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-> I develop this document largely based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho.
+> I develop this document largely based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho, which are derived from past course notes by Luke Sonnet, Aaron Rudkin, Ciara Sterbenz.
 
 ## 1. Practice with Potential Outcomes
 
