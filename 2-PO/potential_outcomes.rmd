@@ -7,7 +7,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 ```
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\V}{\mathbb{V}}
@@ -386,43 +386,40 @@ large_sample[1:10,] %>%  #display first 10 units only
 
 ```{r, fig.align='center'}
 ## Monte Carlo approximation for randomization inference
-#observed ate estimate
-obs_dim <- large_sample %>% summarize(estimate = mean(Y[D==1]) - mean(Y[D==0])) %>% pull(estimate)
-obs_dim
 
-#1: Fill in missing potential outcomes under the sharp null
-tau_0 <- 0
-large_sample <- large_sample %>% 
-  mutate(Y0_sn = Y, Y1_sn = Y) %>%
-  mutate(Y0_sn = ifelse(D==1, Y1_sn - tau_0, Y0_sn),
-         Y1_sn = ifelse(D==0, Y0_sn + tau_0, Y1_sn))
+ri_function <- function(Y, D, M){
+  #1. observed ate estimate
+  obs_dim <- mean(Y[D==1]) - mean(Y[D==0])
 
-#make a ri_mc function
-ri_mc <- function(data){ #sharp null hypothesis: tau_i=tau_0 (usually tau_0=0)
-  data %>%
-    #2.simple random assignment (same as original procedure)
-    mutate(D_sim = sample(c(0, 1), n(), replace = TRUE)) %>% 
-    #mutate(D_sim = sample(data$D)) %>% #had procedure been complete randomization: just reshuffle D
-    mutate(Y_sim = ifelse(D==1, Y1_sn, Y0_sn)) %>%  #update outcomes under new assignment
-    #3.compute test statistic   
-    summarize(dim = mean(Y_sim[D_sim==1]) - mean(Y_sim[D_sim==0])) %>% pull
+  #2. create potential outcomes under sharpnull
+  Y0_sn = Y
+  Y1_sn = Y
+  
+  #3. resample M times and calculate DiM under new assignment
+  res  <- map_dbl(1:M, function(empty_input){
+    #3-1. new treatment assignment
+    new_assignment <- sample(D, length(D), replace = FALSE)
+    
+    #3-2. DiM under the new assignment
+    new_dim <- mean(Y1_sn[new_assignment == 1]) - mean(Y0_sn[new_assignment == 0])
+    
+    return(new_dim)
+  })
+  
+  #RI p-value (2-sided)
+  p_value = sum(abs(res) >= abs(obs_dim))/length(res)
+  
+  return(list(simulation_dt = res,
+              obs_dim = obs_dim,
+              p_value = p_value))
 }
-ri_mc(large_sample)
 
-#get reference distribution
-ref_dist <- tibble(est = replicate(1000, ri_mc(large_sample), simplify = TRUE))
-
-#RI p-value (2-sided)
-exact_p <- mean(abs(ref_dist) >= abs(obs_dim)) #two-tailed test
-exact_p
+ir_result <- ri_function(large_sample$Y, large_sample$D, 100)
 
 #plot
-ggplot(ref_dist, aes(x=est)) +
-  geom_histogram(aes(y=..density..), alpha=.7) +
-  geom_vline(xintercept = obs_dim, col="red") + #observed difference-in-means
-  geom_vline(xintercept = -obs_dim, col="red") + #-observed difference-in-means
-  labs(title="Null Distribution for DiM", x=("Estimate")) + 
-  theme_minimal()
+plot(density(ir_result$simulation_dt),
+     main = "Null Distribution for DiM")
+abline(v = ir_result$obs_dim, col="blue")
 ```
 
 <br>
