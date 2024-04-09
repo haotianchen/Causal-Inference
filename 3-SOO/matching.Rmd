@@ -1,0 +1,25 @@
+---
+title: '200C Section: Selection on Observables'
+author: 'Haotian (Barney) Chen'
+date: April 26, 2024 
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\independent}{\perp\!\!\!\perp}
+
+
+I develop this document largely based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. 
+
+
+## Selection on Observables
+
+
+
+## Matching
+
