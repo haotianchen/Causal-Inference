@@ -6,7 +6,8 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 ## TA Section Notes
 - [Math Review](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/prob_matrix_review.html) (Probability: [Harvard Gov Math Prefresher](https://iqss.github.io/prefresher/probability-theory.html); Linear Algebra: [Basic Linear Algebra Review](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/BasicMatrixAlgebra_review.pdf) and [OLS in Matrix Form](https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf))
 - [Potential Outcomes and Randomized Experiments](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/2-PO/potential_outcomes.html)
-- [Selection on Observables](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/matching.html) and [Sensitivity Analysis](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/sensitivity.html)
+- [Matching](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/matching.html) and [Weighting](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/weighting.html)
+- [Sensitivity Analysis](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/4-Sensitivity/sensitivity.html)
 
 
 ## Resources
