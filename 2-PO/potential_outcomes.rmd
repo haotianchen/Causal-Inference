@@ -70,7 +70,7 @@ Population-wise:
 * Average treatment effect among treated (ATT): $\E[Y_{1i}-Y_{0i} | D_i=1] = \E[\tau_i | D_i=1]$
 * Average treatment effect among controlled (ATC): $\E[Y_{1i}-Y_{0i} | D_i=0] = \E[\tau_i | D_i=0]$
 
-Let's assume you are Doctor Strange --- i.e., you can observe what's happening in the multiverses. 
+Now let's assume you are Doctor Strange --- i.e., you can observe what's happening in the multiverses. 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 tab<- tibble(i=1:6, Y0=rep("", 6), Y1=rep("", 6), Tau=rep("", 6),
@@ -91,7 +91,7 @@ tibble(i=1:6, Y0=c(6, 2, 4, 1, 12, 3), Y1=c(8, 5, 8, 6, 18, 10), Tau=c(2, 3, 4, 
 * ATT: (2+5+7)/3
 * ATC: (3+4+6)/3
 
-Actually, we can rewrite the ATE as a weighted average: ATE = $Pr(D_i=1)$ ATT + $Pr(D_i=0)$ ATC (**hint**: related to Q2, Pset 2). Here you can consider $Pr(D_i=1)$ as the probability/proportion treated. 
+Actually, we can rewrite the ATE as a weighted average: ATE = $Pr(D_i=1)$ ATT + $Pr(D_i=0)$ ATC. Here you can consider $Pr(D_i=1)$ as the probability/proportion treated. **Hint**: you will be using this equation in Q2, Pset 2 --- using the law of iterated expectations. 
 
 <br>
 
@@ -223,9 +223,22 @@ Takeaway: First, identification analysis clarifies what assumptions are required
  
  - We can then build the 95\% CI: $\hat{\tau}_{\text{ATE}} \pm 1.96*\hat{SE}_\hat{\text{ATE}}$.
  
- - In contrast, randomization inference assumes almost nothing. It allows us to make distribution-free inferences (e.g., reliance on normality, etc), which allows us to deal with small sample size. It exploits the randomness of treatment randomization: given data, "randomness" is induced only by the very physical act of random treatment assignment, which is known to researcher who "designed" it. Thus, we don't have to rely on "large" sample approximation, which motivates the use of RI.
+Putting them into (pseudo)codes: suppose we have treated and control from data (**Hint**: this relates to Pset2, Q3)
+```{r eval=FALSE}
+DIM = mean(treated) - mean(control) #\hat ATE
+SE = sqrt(var(treated) / length(treated) 
+          + var(control) / length(control))
+t_statistic = DIM / SE
+CI = (DIM - 1.96*SE, DIM + 1.96*SE)
+
+# can we reject the null? 
+abs(t_statistic) > 1.96
+```
  
- - RI poses sharp null hypothesis. <span style="color:red;">Sharp null</span> typically implies no effect for every unit. Thus, **under such a sharp null, both potential outcomes are known for each unit --- being either directly observed or imputed through the sharp null ($H_0: \tau_i = Y_{1i} - Y_{0i} = 0$, so $Y_{1i}=Y_{0i}$).** That's the key idea of RI (recall the fundamental problem of causal inference).
+ 
+ - Randomization inference assumes almost nothing. It allows us to make distribution-free inferences (e.g., reliance on normality, etc), which allows us to deal with small sample size. It exploits the randomness of treatment randomization: given data, "randomness" is induced only by the very physical act of random treatment assignment, which is known to researcher who "designed" it. Thus, we don't have to rely on "large" sample approximation, which motivates the use of RI.
+ 
+ - RI poses sharp null hypothesis. <span style="color:red;">Sharp null</span> typically implies no effect for every unit. Thus, **under such a sharp null, both potential outcomes are known for each unit --- being either directly observed or imputed through the sharp null ($H_0: \tau_i = Y_{1i} - Y_{0i} = 0$, so $Y_{1i}=Y_{0i}$).** That's the key idea of RI (recall the fundamental problem of causal inference --- a **hint** for Pset 2, Q4).
  
  - RI is conducted as follows. Under the specified sharp null, we can fill in all potential outcomes. With those sharp null potential outcomes, we would **reshuffle** the treatment assignment in certain ways, and compute the test statistic (e.g., DiM). That is, the sampling distribution of the test statistic under sharp null (i.e., randomization distribution) is obtained by simulating all possible random assignments (when the number of possible assignments is too large, we approximate by a large random sample of possible assignments). Then we make inference: e.g., compare the observed test-statistic to the randomization distribution and judge how “extreme” it is (hypothesis test with $p$-value); calculate the standard deviation of the reference distribution (standard error); construct RI confidence intervals.
  
@@ -239,7 +252,10 @@ Takeaway: First, identification analysis clarifies what assumptions are required
   2) Obtain every possible treatment assignment vector $\omega \in \Omega$, by the permutation of original treatment assignment vector.
   3) Calculate the test statistic under each $\omega$ (don't forget to make each assignment "turn on" the observed outcome). In our case, compute the DiM estimates.
   4) Repeat the step 3 for all possible treatment assignment to get the reference distribution.
-  
+
+ - Pros: exact (no need for asymptotics), works for any test statistic.
+ - Cons: sharp null is restrictive, not quite feasible for large experiments because of computational intensity. 
+
 ```{r}
 # Data from Table 2-1, Gerber and Green, "Field Experiments" (2012)
 tiny_data <- tibble(i = 1:7, #unit index
@@ -367,7 +383,7 @@ Dramatically different! Here the t-approximation works terrible because 1) the n
   
   - If assumptions of theoretical approximations like t-test is proper, the difference between conventional $p$-values and RI $p$-values may be negligible (when randomization is simple, outcome is similar to normal, and the sample is large enough). But when the randomization procedure is complicated (e.g., some combinations of complicated blocking and clustering), sample is small, or outcome is too skewed, RI is a good alternative to sidestep the difficulty in evaluating uncertainty engaged in complicated sampling/randomization procedure.
   
-  - Now let's play with R code. **Hint**: this relates to Q4, Pset2.
+  - Now let's play with R code. **Hint**: this code chunk relates to Q4, Pset2.
 ```{r}
 set.seed(1234)
 #creat a randomized experiment dataset
@@ -536,13 +552,13 @@ consist %>%
 
 <br>
 
-**2. Balance Test**
+**2. Check Covariate Balance**
 
 **Hint**: this relates to Q3, Pset2. 
 
 ```{r warning=FALSE, message=FALSE}
-library(Matching) 
-library(ebal)
+library(Matching) # assess balance 
+library(ebal) # making table
 
 data(lalonde)
 
@@ -563,6 +579,8 @@ table_bal = table_bal[, c(1, 2, 6, 7)] # select things we care
 knitr::kable(table_bal, digits = 4) %>% kable_styling()
 ```
 
+Why should we check covariate balance? 
+
 <br>
 
 **3. Heteroskedasticity**
@@ -581,6 +599,7 @@ lm_res <- lm(Y ~ X-1)
 library(sandwich)
 library(lmtest)
 coeftest(lm_res, vcov = vcovHC(lm_res, type = "HC2"))
+# we choose "HC2" for the standard error
 
 #2. Using `estimatr` package
 library(estimatr)
