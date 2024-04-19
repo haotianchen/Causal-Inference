@@ -1,0 +1,101 @@
+---
+title: '200C Section: Sensitivity Analysis'
+author: 'Haotian (Barney) Chen'
+date: May 3, 2024 
+output:
+  html_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
+```
+
+I develop this document largely based on materials from the `sensemakr` package [website](https://carloscinelli.com/sensemakr/articles/sensemakr.html) which Carlos Cinelli and Chad Hazlett developed. You can check their [paper](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/rssb.12348). The goal of `sensemakr` is to "make it easier to understand the impact that omitted variables would have on a regression result." 
+
+***
+
+## Sensitivity Analysis
+
+Formal Setting: 
+
+- Outcome $Y$, treatment $D$, observed (pre-treatment) covariates $X$, unobserved covariate(s) $Z$.
+- $R^2_{D \sim Z|X}$ is the partial $R^2$ from regressing $D$ on $Z$ controlling for $X$. 
+- $R^2_{Y \sim Z|X,D}$ is the partial $R^2$ from regressing $Y$ on $Z$ controlling for $X$ and conditioning on $D$. 
+
+We will use data on attitudes of Darfurian refugees in eastern Chad to estimate the effects of exposure to violence on attitudes towards peace. You can check the original Hazlett (2020) [paper](https://doi.org/10.1177/0022002719879217). 
+
+```{r}
+library(sensemakr)
+data("darfur")
+# run ?darfur to check this dataset
+```
+
+The “treatment” variable of interest is `directlyharmed`, which indicates whether the individual was physically injured or maimed during the attack on her or his village in Darfur. The main outcome of interest is `peacefactor`, an index measuring pro-peace attitudes. 
+
+```{r}
+# run regression model
+darfur.model <- lm(peacefactor ~ directlyharmed + village + female + age + farmer_dar 
+                   + herder_dar + pastvoted + hhsize_darfur, data = darfur)
+```
+
+### sensemakr Package
+The previous estimate requires the assumption of no unobserved confounders for unbiasedness. 
+
+
+```{r}
+darfur.sensitivity <- sensemakr(model = darfur.model, 
+                         treatment = "directlyharmed",
+                         benchmark_covariates = "female",
+                         kd = 1:3,
+                         ky = 1:3,
+                         q = 1,
+                         alpha = 0.05, 
+                         reduce = T)
+
+darfur.sensitivity
+```
+
+The arguments are: 
+
+- model: the `lm` object with the outcome regression. In our case, `darfur.model`.
+
+- treatment: the name of the treatment variable. In our case, `directlyharmed`.
+
+- benchmark_covariates: the names of covariates that will be used to bound the plausible strength of the unobserved confounders. Here, we put `female`, which we argue to be among the main determinants of exposure to violence and find to be a strong determinant of attitudes towards peace.
+
+- kd and ky: these arguments parameterize how many times stronger the confounder is related to the treatment (`kd`) and to the outcome (`ky`) in comparison to the observed benchmark covariate (`female`). In our example, setting `kd = 1:3` and `ky = 1:3` means we want to investigate the maximum strength of a confounder once, twice, or three times as strong as female (in explaining treatment and outcome variation). If only `kd` is given, `ky` will be set equal to it by default.
+
+- q: this allows the user to specify what fraction of the effect estimate would have to be explained away to be problematic. Setting `q = 1`, as we do here, means that a reduction of 100% of the current effect estimate, that is, a true effect of zero, would be deemed problematic. The default is 1.
+
+- alpha: significance level of interest for making statistical inferences. The default is 0.05.
+
+- reduce: should we consider confounders acting towards increasing or reducing the absolute value of the estimate? The default is reduce = TRUE, which means we are considering confounders that pull the estimate towards (or through) zero.
+
+```{r results = 'asis'}
+ovb_minimal_reporting(darfur.sensitivity, format = "html") 
+```
+
+<br>
+<br>
+
+How should we interpret the results? 
+
+- The robustness value for bringing the point estimate of `directlyharmed` exactly to zero ($RV_{q=1}$) is 13.9\%. This means that unobserved confounders that explain 13.9\% of the residual variance both of the treatment and of the outcome are sufficiently strong to explain away all the observed effect. On the other hand, unobserved confounders that do not explain at least 13.9\% of the residual variance both of the treatment and of the outcome are not sufficiently strong to do so.
+
+- The robustness value for testing the null hypothesis that the coefficient of `directlyharmed` is zero ($RV_{q=1, \alpha=0.05}$) falls to 7.6\%. This means that unobserved confounders that explain 7.6\% of the residual variance both of the treatment and of the outcome are sufficiently strong to bring the lower bound of the confidence interval to zero (at the chosen significance level of 5\%). On the other hand, unobserved confounders that do not explain at least 7.6\% of the residual variance both of the treatment and of the outcome are not sufficiently strong to do so.
+
+- The partial $R^2$ of `directlyharmed` with `peacefactor` means that, in an extreme scenario, in which we assume that unobserved confounders explain all of the left out variance of the outcome, these unobserved confounders would need to explain at least 2.2\% of the residual variance of the treatment to fully explain away the observed effect.
+
+### Plots
+```{r}
+plot(darfur.sensitivity, sensitivity.of = "t-value")
+```
+
+The plot reveals that, at the 5\% significance level, the null hypothesis of zero effect would still be rejected given confounders once or twice as strong as female. However, by contrast to the point-estimate, accounting for sampling uncertainty now means that the null hypothesis of zero effect would not be rejected with the inclusion of a confounder three times as strong as female.
+
+```{r}
+plot(darfur.sensitivity, type = "extreme")
+```
+
+The plot shows that, even in the most extreme case of $R^2_{Y \sim Z|X,D}$ = 100\%, confounders would need to be more than twice as strongly associated with the treatment to fully explain away the point estimate.Moving to the scenarios $R^2_{Y \sim Z|X,D}$ = 75\% and $R^2_{Y \sim Z|X,D}$ = 50\%, confounders would need to be more than three times as strongly associated with the treatment as was female in order to fully explain away the point estimate.
+
+

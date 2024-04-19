@@ -1,7 +1,7 @@
 ---
 title: '200C Section: Selection on Observables'
 author: 'Haotian (Barney) Chen'
-date: April 26, 2024 
+date: "April 26, 2024 and May 3, 2024"  
 output:
   html_document: default
 ---
@@ -68,8 +68,9 @@ Here's an animation of how it works intuitively:
 
 ## Matching
 
-### Matching as an estimation strategy (it is NOT an identification strategy)
 ***
+
+### Matching as an estimation strategy (it is NOT an identification strategy)
 
  - It's worth repeating: identification precedes estimation. Let’s say that we know that ignorability holds conditional on observed covariates $X_i$. That is, we can get reasonable answer with our data (we can identify) for our target quantity (estimand). Then how can we "estimate" the estimand? Or, what is the best way to obtain an estimate with "adjusting for" $X_i$? Some broad approaches, which overlap in part but also have fundamental differences, include **matching**, **weighting**, and **regression adjustment**.
  
@@ -165,8 +166,7 @@ legend(5, 4.75, lty=c(1, 1, 2, 2), col=c(1, 8, 1, 8), lwd=1.5,
  <br>
 
 
-## Matching Coding Practice
-***
+### Matching Coding Practice
 
 ```{r message=FALSE}
 library(foreign) # Loading normally unsupported file formats
@@ -180,7 +180,7 @@ dat <- read.csv("BlattmanAnnan.csv")
 head(dat)
 ```
 
-### Check the covariate balance 
+#### Check the covariate balance 
 
 First, before reporting actual balance statistics let's take a look at what seems to predict treatment status. This implies a regression where the dependent variable is treatment status and the predictors are every other covariate we can fit.
 
@@ -261,7 +261,7 @@ balance_test %>%
 ```
 
 
-### Matching
+#### Matching
 
 Let's do some matching. Let's try to extract the ATT -- so we'll use our real treatment observations, matched control observations, and discard the rest. We'll do a simple match; one match per treated unit. And we'll use replacement (so the same control unit can be picked as a match for more than one treated unit).
 
@@ -341,7 +341,7 @@ Compare to "naive" estimate:
 summary(lm(educ ~ abd, data = dat))
 ```
 
-### Balance After Matching
+#### Balance After Matching
 Normally, before you even look at results you'd examine balance post-matching. What we're trying to do here is make sure that the Matching process actually resulted in good balance. And we can include variables that we didn't match on, if we want.
 
 Note, you can check balance on things that weren't matched on to make sure they got balanced too. 
@@ -365,14 +365,14 @@ balance_test_after %>%
 ```
 
 
-### Propensity Scores
+## Propensity Score Methods
 
-#### Idea
+### Idea
 
  - Motivation: the curse of dimensionality makes it difficult to work in a situation where there are many (pretreatment) covariates to condition on.
  
  
-#### Estimation
+### Estimation
 
 First, let's get the scores using logistic regression.
 
@@ -433,5 +433,8 @@ love.plot(m_out_ps, stat=c("m", "ks"))
 
 #much better balance!
 ```
+
+
+### Weighting
 
 
