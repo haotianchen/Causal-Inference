@@ -1,7 +1,7 @@
 ---
 title: '200C Section: Selection on Observables'
 author: 'Haotian (Barney) Chen'
-date: "April 26, 2024 and May 3, 2024"  
+date: "April 26, 2024 + May 3, 2024 + May 10, 2024"  
 output:
   html_document: default
 ---
@@ -17,13 +17,19 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, fig.align = 'ce
 
 I develop this document largely based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. 
 
+> The First Commandment of Causal Inference: A result is causal if you can support the assumptions that make it causal, not because you performed some procedure.
+
+
 ## Selection on Observables
 
 ***
+ - Recall that random assignment guarantees **ignorability**: $\E[Y_{1i}|D_i=1] = \E[Y_{1i}|D_i=0]$ and $\E[Y_{0i}|D_i=1] = \E[Y_{0i}|D_i=0]$. In observational studies, however, it is not always met. 
+  
+ - Goal of SOO: once we condition on some **pre-treatment** observable covariates, treatment is as-if random assignment. We are "finding experiments" in the data. We will discuss estimation strategies including subclassification, matching, weighting, propensity score methods, and regression. 
 
- - Goal: once we condition on some pre-treatment observable covariates, treatment is as-if random assignment. 
-
- - We invoke the **<span style="color:red;">conditional ignorability</span>** (selection on observables; SOO) assumption: $$ \{ Y_{0i}, Y_{1i} \} \independent D_i|X_i=x \; \text{ for any } \; x \in \chi,$$ which means that "among units with same values of covariates $X_i$, $D_i$ is "as-if" randomly assigned. In other words, the conditional distribution of potential outcomes is identical across levels of the treatment once we condition on the covariates $X$ (recall stratified/block randomized experiment, or "conditional experiment": "we effectively run a separate experiment within each stratum of $X$", but now allowing for continuous $X$s). Similarly, we have weaker versions of the conditional $\{Y_{1i} \} \independent D_i|X_i=x \; \text{ for any } \; x \in \chi$ or $\{ Y_{0i} \} \independent D_i|X_i=x \; \text{ for any } \; x \in \chi$. 
+ -  We invoke the **<span style="color:red;">conditional ignorability</span>** (selection on observables; conditionally as-if random) assumption: $$ \{ Y_{0i}, Y_{1i} \} \independent D_i|X_i=x \; \text{ for any } \; x \in \chi,$$ which means that among units with same values of covariates $X_i$, $D_i$ is "as-if" randomly assigned. In other words, the conditional distribution of potential outcomes is identical across levels of the treatment once we condition on the covariates $X$ (recall stratified/block randomized experiment, or "conditional experiment": "we effectively run a separate experiment within each stratum of $X$", but now allowing for continuous $X$s). **Hint**: this relates to Pset 3, Q1. 
+ 
+ - Similarly, we have weaker versions of the conditional ignorability: $\{Y_{1i} \} \independent D_i|X_i=x \; \text{ for any } \; x \in \chi$ or $\{ Y_{0i} \} \independent D_i|X_i=x \; \text{ for any } \; x \in \chi$. 
 
  - We also need the **<span style="color:red;">common support (positivity)</span>** assumption: $$0<\Pr(D_i=1|X_i=x)<1 \; \text{ for any } \; x \in \chi,$$ which means that "with any value of $X_i$, unit could have received either treatment or  control."
  
@@ -42,7 +48,7 @@ I develop this document largely based on materials from the previous TAs for PS 
  $$
  Recall that regression can be used as just an estimator for conditional expectation function ("agnostic" view). Thus, ATE can be identified with regression function, $$\hat{\tau}(x) = \E[Y_i|D_i=1, X_i=x] - \E[Y_i|D_i=0, X_i=x],$$ where $\hat{\beta}_{D}$ would capture the average treatment effect.
  
- - The identification result for ATT ($\E[Y_{1i}-Y_{0i}|D_i=1]$) is similar, but replace $f(x)$ with $f(x|D_i=1)$: for ATT, we now take expectation with respect to the distribution of $X_i$ given $D_i=1$ (instead of the marginal distribution of $X$). **Hint**: this relates to Pset3, Q1. 
+ - The identification result for ATT ($\E[Y_{1i}-Y_{0i}|D_i=1]$) is similar, but replace $f(x)$ with $f(x|D_i=1)$: for ATT, we now take expectation with respect to the distribution of $X_i$ given $D_i=1$ (instead of the marginal distribution of $X$). **Hint**: this relates to Pset 3, Q1. 
   $$
  \begin{align*}
  \tau_{ATT} &= \E[Y_{1i} - Y_{0i} | D_i=1] \\
@@ -53,6 +59,24 @@ I develop this document largely based on materials from the previous TAs for PS 
  &= \color{red}{\int (\E[Y_i|X_i=x, D_i=1] - \E[Y_i|X_i=x, D_i=0]) P(x|D_i=1)dx}  &\text{(consistency, SUTVA)}\\
  \end{align*}
  $$
+Note that we only need the weaker version of the conditional ignorability here. 
+
+ <br>
+
+## Subclassification
+
+***
+
+- In subclassification, we 1) partition the data by covariates X, 2) calculate the difference in means of $Y_i$ between the treated and untreated within each stratum, and 3) calculate the weighted average of (2), with weights equal to the proportions of units in the strata.
+
+- We can write down the subclassification estimators: 
+$$
+\hat \tau_{ATE} = \sum_{j=1}^{M}\{\overline Y_{1j} - \overline Y_{0j}\}\frac{n_j}{n}
+$$
+$$
+\hat \tau_{ATT} = \sum_{j=1}^{M}\{\overline Y_{1j} - \overline Y_{0j}\}\frac{n_1j}{n_1}
+$$
+where $M$ is the number of strata. 
 
 <br>
 
@@ -60,17 +84,17 @@ Here's an animation of how it works intuitively:
 <p align="center">
 ![ ](soo.gif)
 </p>
-
 (Credit: Apoorva Lal and Nick Huntington-Klein)
 
- <br>
-
+<br>
 
 ## Matching
 
 ***
 
 ### Matching as an estimation strategy (it is NOT an identification strategy)
+ 
+ - Subclassification breaks when you have many $X$'s.
 
  - It's worth repeating: identification precedes estimation. Let’s say that we know that ignorability holds conditional on observed covariates $X_i$. That is, we can get reasonable answer with our data (we can identify) for our target quantity (estimand). Then how can we "estimate" the estimand? Or, what is the best way to obtain an estimate with "adjusting for" $X_i$? Some broad approaches, which overlap in part but also have fundamental differences, include **matching**, **weighting**, and **regression adjustment**.
  
@@ -80,19 +104,23 @@ Here's an animation of how it works intuitively:
 
  - Idea: "balance" the distribution of covariates (X) in the treated and control groups. Matching is a non-parametric estimator of the counterfactual world. 
  
- - Individaul treatment effect for **treated unit** $i$ is $$\tau_i = \underbrace{Y_i}_{\text{observed}} - \underbrace{Y_{0i}}_{\text{unobserved}}$$
+ - In practice we have to make many calls: which covariates, what distance metric, with or without replacement, whether one-on-one, etc.
+ 
+ - Individual treatment effect for **treated unit** $i$ is $$\tau_i = \underbrace{Y_i}_{\text{observed}} - \underbrace{Y_{0i}}_{\text{unobserved}}$$
  
  - Estimand: ATT, $\E[Y_{1i} - Y_{0i}|X_i, \color{red}{D_i=1}]$ (for each treated units, match them with "similar" control units, and discard the rest).
  
  - Estimator: 
     + Closest match: $$\hat{\tau}_{ATT}  = \frac{1}{N_1} \sum_{D_i=1} [Y_i - Y_{j(i)}] $$ where $Y_{j(i)}$ is the imputed counterfactual value of $i$ by matching.
     + M closest matches: $$\hat{\tau}_{ATT}  = \frac{1}{N_1} \sum_{D_i=1} [Y_i - \frac{1}{M} \sum_{j \in M_i}Y_{jm(i)}] $$ where $Y_{j(i)}$ is the imputed counterfactual value of $i$ by matching, $M_i$ is the "matched set" for treated unit $i$.
-    + Generally: $$\hat{\tau}_{ATT}  = \frac{1}{N_1} \sum_{D_i=1} [Y_i - \omega_{ij} \sum_{j=1}Y_{j(i)}] $$ where $Y_{j(i)}$ is the imputed counterfactual value of $i$ by matching, $\omega_{ij}$ depends on the matching procedure (e.g., euclidean distance, StataD, Mahalanobis distance, GeneticD).
+    + Generally: $$\hat{\tau}_{ATT}  = \frac{1}{N_1} \sum_{D_i=1} [Y_i - \omega_{ij} \sum_{j=1}Y_{j(i)}] $$ where $Y_{j(i)}$ is the imputed counterfactual value of $i$ by matching, $\omega_{ij}$ depends on the matching procedure (e.g., difference in propensity score, euclidean distance, StataD, Mahalanobis distance, GeneticD).
 
 <br>
 
 Here's an animation of how it works intuitively:
- <p align="center">
+<br>
+
+<p align="center">
 ![ ](matching.gif)
 </p>
 
@@ -159,8 +187,8 @@ legend(5, 4.75, lty=c(1, 1, 2, 2), col=c(1, 8, 1, 8), lwd=1.5,
 
 #### Disadvantages: 
 
- - Bias arise with the number of continuous covariates.
- - Abadie-Imbens bias adjustment: $$\hat{\tau}_{ATT}  = \frac{1}{N_1} \sum_{D_i=1} [Y_i - Y_{j(i)} - (\hat \mu_0(X_i) - \hat \mu_0(X_{j(i)}))]$$ where $\mu(x) = \E[Y|X, D=0]$.
+ - Bias arise with more continuous covariates.
+ - Abadie-Imbens bias adjustment: $$\hat{\tau}_{ATT}  = \frac{1}{N_1} \sum_{D_i=1} [Y_i - Y_{j(i)} - (\hat \mu_0(X_i) - \hat \mu_0(X_{j(i)}))]$$ where $\mu(x) = \E[Y|X, D=0]$. In R, use `Match(Y, Tr, X, BiasAdjust = TRUE)`
 
 
  <br>
@@ -178,6 +206,7 @@ dat <- read.csv("BlattmanAnnan.csv")
 
 # Let's take a look at the top few rows of the data frame:
 head(dat)
+# abd -> treatment
 ```
 
 #### Check the covariate balance 
@@ -364,17 +393,24 @@ balance_test_after %>%
   kable_styling(full_width = F, position = "center")
 ```
 
+<br>
 
 ## Propensity Score Methods
 
+***
+
 ### Idea
 
- - Motivation: the curse of dimensionality makes it difficult to work in a situation where there are many (pretreatment) covariates to condition on.
+ - Motivation: the curse of dimensionality makes it difficult to work in a situation where there are many (pre-treatment) covariates to condition on.
  
+ - Propensity Score: the probability of treatment conditional on the covariates, or $\pi_i = Pr(D_i=1|X_i)$. Using the propensity score, we can compare units that have a comparable probability of getting treated.
  
-### Estimation
+ - Assuming conditional ignorability and common support, we have $\{ Y_{0i}, Y_{1i} \} \independent D_i|\pi_i$, which is called the Balancing Property of the propensity score.
+ 
+ - After estimating the propensity scores, we can 1) use subclassification or matching, or 2) weight by the inverse of the propensity score.  
 
-First, let's get the scores using logistic regression.
+### Coding Example
+First, let's calculate the propensity scores using logistic regression.
 
 ```{r}
 logit_fit <- glm(balance_formula, data = dat, family = binomial(link = logit))
@@ -435,6 +471,7 @@ love.plot(m_out_ps, stat=c("m", "ks"))
 ```
 
 
-### Weighting
+## Weighting
 
+***
 

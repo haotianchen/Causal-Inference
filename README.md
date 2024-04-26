@@ -12,7 +12,7 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - [Directed Acyclic Graphs (DAGs)](https://mixtape.scunning.com/03-directed_acyclical_graphs)
 - [Difference-in-Differences (DiD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/5-DID/DID.html)
 - [Instrumental Variables (IV)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/6-IV/IV.html)
-- [Regression Discontinuity (RD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RD/RD.html)
+- [Regression Discontinuity Design (RDD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RDD/RDD.html)
 
 ## Resources
 
