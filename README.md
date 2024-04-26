@@ -14,9 +14,6 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - [Instrumental Variables (IV)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/6-IV/IV.html)
 - [Regression Discontinuity (RD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RD/RD.html)
 
-## Problem Sets
-- [Solution to Pset1](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/pset1_2024_solution_hc.pdf)
-
 ## Resources
 
 ### Other Courses
