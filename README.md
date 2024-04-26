@@ -2,6 +2,7 @@
 
 Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered in 2024 Spring at UCLA.
 
+> Reminders: Pset 2 and Final Project sign-up are due April 26 by 11:59 PM! 
 
 ## TA Section Notes
 - [Math Review](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/prob_matrix_review.html) (Probability: [Harvard Gov Math Prefresher](https://iqss.github.io/prefresher/probability-theory.html); Linear Algebra: [Basic Linear Algebra Review](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/BasicMatrixAlgebra_review.pdf) and [OLS in Matrix Form](https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf))
@@ -9,8 +10,12 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - [Selection on Observables](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/matching.html)
 - [Sensitivity Analysis](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/4-Sensitivity/sensitivity.html)
 - [Directed Acyclic Graphs (DAGs)](https://mixtape.scunning.com/03-directed_acyclical_graphs)
+- [Difference-in-Differences (DiD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/5-DID/DID.html)
+- [Instrumental Variables (IV)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/6-IV/IV.html)
+- [Regression Discontinuity (RD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RD/RD.html)
 
-
+## Problem Sets
+- [Solution to Pset1](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/pset1_2024_solution_hc.pdf)
 
 ## Resources
 
