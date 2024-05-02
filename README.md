@@ -2,7 +2,6 @@
 
 Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered in 2024 Spring at UCLA.
 
-> Reminders: Pset 2 and Final Project sign-up are due April 26 by 11:59 PM! 
 
 ## TA Section Notes
 - [Math Review](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/prob_matrix_review.html) (Probability: [Harvard Gov Math Prefresher](https://iqss.github.io/prefresher/probability-theory.html); Linear Algebra: [Basic Linear Algebra Review](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/BasicMatrixAlgebra_review.pdf) and [OLS in Matrix Form](https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf))
@@ -38,10 +37,23 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
   - **Instructor(s)**: Fan Li
   - **Slides**: https://www2.stat.duke.edu/~fl35/CausalInferenceClass.html
 
-- POL-GA 1251 Quantitative Political Analysis II (NYU)
+- POL-GA 1251: Quantitative Political Analysis II (NYU)
   - **Instructor(s)**: Cyrus Samii
   - **Slides**: https://cyrussamii.com/?page_id=3893
-  - **Lab Handouts**: [Spring 2021](https://www.zhoujunlong.com/Quant2_lab_2021sp/)
+  - **Lab Handouts**: [Spring 2021 Handouts](https://www.zhoujunlong.com/Quant2_lab_2021sp/)
+
+- POLI 784: Linear Methods in Causal Inference (UNC)
+  - **Instructor(s)**: Ye Wang
+  - **Slides**: https://www.yewang-polisci.com/teaching
+
+- ECON 574: Applied Empirical Methods (Yale)
+  - **Instructor(s)**: Paul Goldsmith-Pinkham
+  - **Slides**: https://github.com/paulgp/applied-methods-phd
+  - **Videos**: https://www.youtube.com/playlist?list=PLWWcL1M3lLlojLTSVf2gGYQ_9TlPyPbiJ
+
+- ECON 2400: Applied Econometrics II (Brown)
+  - **Instructor(s)**: Peter Hull
+  - **Slides**: https://about.peterhull.net/metrix
 
 - STATS 361: Causal Inference (Stanford)
   - **Instructor(s)**: Stefan Wager
