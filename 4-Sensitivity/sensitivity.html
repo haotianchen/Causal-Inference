@@ -358,14 +358,19 @@ display: none;
 
 
 <p>I develop this document largely based on materials from the
-<code>sensemakr</code> package <a href="https://carloscinelli.com/sensemakr/articles/sensemakr.html">website</a>
-which Carlos Cinelli and Chad Hazlett developed. You can check their <a href="https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/rssb.12348">paper</a>.
-The goal of <code>sensemakr</code> is to “make it easier to understand
-the impact that omitted variables would have on a regression
-result.”</p>
+<code>sensemakr</code> package <a href="https://carloscinelli.com/sensemakr/articles/sensemakr.html">website</a>.</p>
 <hr />
 <div id="sensitivity-analysis" class="section level2">
 <h2>Sensitivity Analysis</h2>
+<blockquote>
+<p>Goal: had there were unmeasured confounders (omitted variables), what
+would happen?</p>
+</blockquote>
+<div id="rosenbaum-and-rubin-1983-and-imbens-2003" class="section level3">
+<h3>Rosenbaum and Rubin (1983) and Imbens (2003)</h3>
+</div>
+<div id="cinelli-and-hazlett-2020" class="section level3">
+<h3>Cinelli and Hazlett (2020)</h3>
 <p>Formal Setting:</p>
 <ul>
 <li>Outcome <span class="math inline">\(Y\)</span>, treatment <span class="math inline">\(D\)</span>, observed (pre-treatment) covariates
@@ -377,7 +382,7 @@ partial <span class="math inline">\(R^2\)</span> from regressing <span class="ma
 </ul>
 <p>We will use data on attitudes of Darfurian refugees in eastern Chad
 to estimate the effects of exposure to violence on attitudes towards
-peace. You can check the original Hazlett (2020) <a href="https://doi.org/10.1177/0022002719879217">paper</a>.</p>
+peace. You can check the original Cinelli and Hazlett (2020) <a href="https://doi.org/10.1177/0022002719879217">paper</a>.</p>
 <pre class="r"><code>library(sensemakr)
 data(&quot;darfur&quot;)
 # run ?darfur to check this dataset</code></pre>
@@ -389,6 +394,7 @@ attitudes.</p>
 <pre class="r"><code># run regression model
 darfur.model &lt;- lm(peacefactor ~ directlyharmed + village + female + age + farmer_dar 
                    + herder_dar + pastvoted + hhsize_darfur, data = darfur)</code></pre>
+</div>
 <div id="sensemakr-package" class="section level3">
 <h3>sensemakr Package</h3>
 <p>The previous estimate requires the assumption of no unobserved

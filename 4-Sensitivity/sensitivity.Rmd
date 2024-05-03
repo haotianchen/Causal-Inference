@@ -9,11 +9,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 ```
 
-I develop this document largely based on materials from the `sensemakr` package [website](https://carloscinelli.com/sensemakr/articles/sensemakr.html) which Carlos Cinelli and Chad Hazlett developed. You can check their [paper](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/rssb.12348). The goal of `sensemakr` is to "make it easier to understand the impact that omitted variables would have on a regression result." 
+I develop this document largely based on materials from the `sensemakr` package [website](https://carloscinelli.com/sensemakr/articles/sensemakr.html). 
 
 ***
 
 ## Sensitivity Analysis
+
+> Goal: had there were unmeasured confounders (omitted variables), what would happen?
+
+
+### Rosenbaum and Rubin (1983) and Imbens (2003) 
+
+
+
+### Cinelli and Hazlett (2020)
 
 Formal Setting: 
 
@@ -21,7 +30,7 @@ Formal Setting:
 - $R^2_{D \sim Z|X}$ is the partial $R^2$ from regressing $D$ on $Z$ controlling for $X$. 
 - $R^2_{Y \sim Z|X,D}$ is the partial $R^2$ from regressing $Y$ on $Z$ controlling for $X$ and conditioning on $D$. 
 
-We will use data on attitudes of Darfurian refugees in eastern Chad to estimate the effects of exposure to violence on attitudes towards peace. You can check the original Hazlett (2020) [paper](https://doi.org/10.1177/0022002719879217). 
+We will use data on attitudes of Darfurian refugees in eastern Chad to estimate the effects of exposure to violence on attitudes towards peace. You can check the original Cinelli and Hazlett (2020) [paper](https://doi.org/10.1177/0022002719879217). 
 
 ```{r}
 library(sensemakr)
