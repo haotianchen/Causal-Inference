@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE, fig.align = 'ce
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-I develop this document largely based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. 
+I develop this document based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. 
 
 > The First Commandment of Causal Inference: A result is causal if you can support the assumptions that make it causal, not because you performed some procedure.
 
@@ -80,14 +80,6 @@ where $M$ is the number of strata.
 
 <br>
 
-Here's an animation of how it works intuitively:
-<p align="center">
-![ ](soo.gif)
-</p>
-(Credit: Apoorva Lal and Nick Huntington-Klein)
-
-<br>
-
 ## Matching
 
 ***
@@ -126,6 +118,7 @@ Here's an animation of how it works intuitively:
 
 (Credit: Apoorva Lal and Nick Huntington-Klein)
 
+<br>
 
 #### Advantages: 
 
@@ -188,13 +181,14 @@ legend(5, 4.75, lty=c(1, 1, 2, 2), col=c(1, 8, 1, 8), lwd=1.5,
 #### Disadvantages: 
 
  - Bias arise with more continuous covariates.
- - Abadie-Imbens bias adjustment: $$\hat{\tau}_{ATT}  = \frac{1}{N_1} \sum_{D_i=1} [Y_i - Y_{j(i)} - (\hat \mu_0(X_i) - \hat \mu_0(X_{j(i)}))]$$ where $\mu(x) = \E[Y|X, D=0]$. In R, use `Match(Y, Tr, X, BiasAdjust = TRUE)`
-
+ - Abadie-Imbens bias adjustment: $$\hat{\tau}_{ATT}  = \frac{1}{N_1} \sum_{D_i=1} [Y_i - Y_{j(i)} - (\hat \mu_0(X_i) - \hat \mu_0(X_{j(i)}))]$$ where $\mu_0(x) = \E[Y|X, D=0]$. In R, use `Match(Y, Tr, X, BiasAdjust = TRUE)`
 
  <br>
 
+### Matching Coding Example
 
-### Matching Coding Practice
+Example: Blattman and Annan (2009). We want to investigate the impact of being abducted by the LRA (the treatment; `abd`) on education (outcome variable; `educ`). **Hint**: this whole section relates to Pset 3, Q2 and Q3. 
+
 
 ```{r message=FALSE}
 library(foreign) # Loading normally unsupported file formats
@@ -206,12 +200,12 @@ dat <- read.csv("BlattmanAnnan.csv")
 
 # Let's take a look at the top few rows of the data frame:
 head(dat)
-# abd -> treatment
+# abd is the treatment
 ```
 
-#### Check the covariate balance 
+#### Step 1: Check the covariate balance 
 
-First, before reporting actual balance statistics let's take a look at what seems to predict treatment status. This implies a regression where the dependent variable is treatment status and the predictors are every other covariate we can fit.
+First, before reporting actual balance statistics let's take a look at what seems to predict treatment status. This implies a regression where the dependent variable is treatment status and the predictors are every other covariates we can fit.
 
 What are some of the methods we can predict balance? We could try a multiple regression setting:
 
@@ -289,10 +283,14 @@ balance_test %>%
   kable_styling(full_width = F, position = "center")
 ```
 
+To sum up, we want to check covariate balance [$Pr(X|D=1) \approx Pr(X|D=0)$] first. The KS test is used to test whether two random variables are sampled from the same distribution. 
 
-#### Matching
 
-Let's do some matching. Let's try to extract the ATT -- so we'll use our real treatment observations, matched control observations, and discard the rest. We'll do a simple match; one match per treated unit. And we'll use replacement (so the same control unit can be picked as a match for more than one treated unit).
+#### Step 2: Matching
+
+Let's do some matching. As mentioned above, you need to make some calls: 1) With or without replacement? 2) How many matches? 3) Which matching algorithm? 
+
+Here, let's try to extract the ATT --- so we'll use our real treatment observations, matched control observations, and discard the rest. We'll do a simple match; one match per treated unit. And we'll use replacement (so the same control unit can be picked as a match for more than one treated unit).
 
 We also need to specify which variables we want to match on exactly. First we'll subset to the variables we care about, and then we'll take a peek at those variable to see whether they're likely to need exact matches:
 
@@ -324,9 +322,11 @@ Now let's do the matching.
 match_model_1 <- Match(Y = outcome,
                        Tr = treated,
                        X = X,
-                       M = 1,
+                       M = 1, # one-to-one matching
                        exact = exact_matches,
                        estimand = "ATT")
+
+# run ?Match to check all the arguments
 ```
 
 What are the arguments here? Well, it's obvious you need `Y` to estimate a treatment effect. It's obvious you need `Tr` so it knows which units are treated and which are controlled. `X` is the covariates to match on. `M` tells you how many matches you want for each treatment unit. `exact` says, for each covariate, if you want an exact match or not. `estimand` tells `Matching` your estimand: in our case we want to keep the real treated units and find matching control units.
@@ -370,7 +370,7 @@ Compare to "naive" estimate:
 summary(lm(educ ~ abd, data = dat))
 ```
 
-#### Balance After Matching
+#### Step 3: Balance After Matching
 Normally, before you even look at results you'd examine balance post-matching. What we're trying to do here is make sure that the Matching process actually resulted in good balance. And we can include variables that we didn't match on, if we want.
 
 Note, you can check balance on things that weren't matched on to make sure they got balanced too. 
@@ -393,24 +393,77 @@ balance_test_after %>%
   kable_styling(full_width = F, position = "center")
 ```
 
+If the balance does not look good, repeat Step 1-3 again.  
+
 <br>
+
 
 ## Propensity Score Methods
 
 ***
 
-### Idea
+### Motivation
 
- - Motivation: the curse of dimensionality makes it difficult to work in a situation where there are many (pre-treatment) covariates to condition on.
+The curse of dimensionality makes it difficult to work in a situation where there are many (pre-treatment) covariates to condition on.
  
- - Propensity Score: the probability of treatment conditional on the covariates, or $\pi_i = Pr(D_i=1|X_i)$. Using the propensity score, we can compare units that have a comparable probability of getting treated.
+ - Let's see what's the problem with a simple simulation: 1) create a dataset with 500 observations, in which a treatment $D_i$ is allocated so that the first 250 units in the data are treated and the rest are control, 2) draw each of the 20 covariates independently from the multinomial distribution with 4 categories, with probabilities $p = (0.1,0.2,0.3,0.4)$ for the treatment group and $p = (0.25,0.25,0.25,0.25)$ for the control group, then 3) match each treated unit to an untreated unit with exactly the same first covariate $x_{i1}$, with replacement, while storing the proportion of treated units matched. We'll repeat this with increasing dimensionality up to 20, and also with increasing the size of control units from 400 to 2,000 to 10,000.
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(Matching)
+## dataset with 500 obs and 20 covariates
+n<-500; n_t<-100; n_c<-n-n_t; p<-20 #100 treated and 400 control
+X <- rbind(replicate(p, sample(1:4, size=n_t, replace=TRUE, #treat
+                               prob=c(.1, .2, .3, .4))),
+           replicate(p, sample(1:4, size=n_c, replace=TRUE))) #control (equal probabilities)
+X <- cbind(X, treat=rep(c(1,0), c(n_t, n_c))) #treatment indicator
+
+## How would the plot change with increasing control units, with fixing treat units?
+X_2 <- rbind(X, cbind(replicate(p, sample(1:4, size=2000*20-500,
+                                          replace=TRUE)), rep(0, 2000)))
+X_3 <- rbind(X, cbind(replicate(p, sample(1:4, size=10000*20-500,
+                                          replace=TRUE)), rep(0, 10000)))
+
+## make a helper function to get proportion of exact matches
+prop_matched <- function(data){
+  match_res <- Match(Tr = data[, "treat"], X = data[, 1:(ncol(data)-1)],
+                     M = 1, exact = TRUE, replace = TRUE, estimand = "ATT")
+  #if no exact match we get FALSE, so assign 0 in that case
+  matched <- ifelse(is.logical(match_res)==TRUE, 0, match_res$nobs - match_res$ndrops)
+  return(matched/nrow(data))
+}
+
+plot_prop_matched <- function(X){
+  map_dbl(1:(ncol(X)-1), #without treat indicator column
+                            function(d){ prop_matched(X[, c(1:d, 21)]) })
+}
+
+plot_df <- tibble(dim=1:20, x1 = plot_prop_matched(X),
+                  x2 = plot_prop_matched(X_2), 
+                  x3 = plot_prop_matched(X_3)) %>% 
+  gather(size, prop, -dim)
+
+ggplot(plot_df, aes(x=dim, y=prop, col=size)) +
+  geom_line() +
+  labs(title="Curse of Dimensionality in Matching, with Varying Size",
+       x="Dimensions (# of variables)", y="Proportion of Exact Matches",
+       col="Control Group Size") +
+  scale_color_hue(labels=c("400", "2,000", "10,000")) +
+  theme_bw() + theme(legend.position=c(.8,.85))
+```
+
+- It seems that the “curse” is really a curse for matching. This plot shows the performance of exact matching does not get better that much even with many more control units to be matched on, and the improvement in performance drops quickly. It's because the comparability of matches is getting worse as more covariates are matched on (hard to find "close" pairs). We might want to balance as many observed variables as possible between treatment conditions, but matching will perform poorly with more covariates.
+
+### Estimating the Propensity Score
+
+ - **Propensity Score**: the probability of treatment conditional on the covariates, or $\pi_i = Pr(D_i=1|X_i)$. Using the propensity score, we can compare units that have a comparable probability of getting treated. In practice, we don’t know the true propensity score --- we usually run a parametric model (like `glm`) to estimate the propensity score. 
  
- - Assuming conditional ignorability and common support, we have $\{ Y_{0i}, Y_{1i} \} \independent D_i|\pi_i$, which is called the Balancing Property of the propensity score.
+ - Assuming conditional ignorability and common support, we have $\{ Y_{0i}, Y_{1i} \} \independent D_i|\pi_i$, which is called the Balancing Property of the propensity score. Condition on $\pi_i$, $D_i$ does not depend upon $X_i$, thus also no longer depends on $\{ Y_{0i}, Y_{1i} \}$ (SOO). 
  
  - After estimating the propensity scores, we can 1) use subclassification or matching, or 2) weight by the inverse of the propensity score.  
 
-### Coding Example
-First, let's calculate the propensity scores using logistic regression.
+### Propensity Score Coding Example
+First, let's calculate the propensity scores using logistic regression. **Hint**: this section relates to Pset 3, Q3. 
 
 ```{r}
 logit_fit <- glm(balance_formula, data = dat, family = binomial(link = logit))
@@ -474,4 +527,58 @@ love.plot(m_out_ps, stat=c("m", "ks"))
 ## Weighting
 
 ***
+
+### Weighting with the Propensity Score
+
+- Recall that the motivation for matching methods was to improve covariate balance between treatment groups. But matching methods have some limitations: (1) inefficient, since it may throw away data (non-matched control units), (2) ineffective, since it may not be able to balance covariates in expectation (if control pool is bad for matching). But we can use all the data we have with balancing covariates by reweighting the data in certain ways!
+
+- The idea is to correct for non-random treatment assignment by weighting by the probability of selection into each group.
+
+- **Inverse Probability-of-Treatment Weighting (IPW)**: IPW relies on the fact that we can estimate how likely a unit with some characteristics $\mathbf{X}$ would be to get treatment (so, "propensity" to get treated). Then the idea is simple: by reweighting units in a certain way, we will make a pseudo-dataset such that the covariates are balanced. Units that are “weird” (they got treatment when we would have expected them to get control, or vice versa) are weighted up, while units that got the expected result are weighted down – so the final weighted quantity will be closer to balanced. 
+
+- Here is the simple IPW formula: $$IPW_i = \frac{1}{\Pr(D_i|X_i)} = \frac{1}{D_i \hat{\pi}_i + (1-D_i)(1-\hat{\pi}_i)}.$$ 
+
+
+<br>
+
+#### Reducing weight variation
+- IPW estimators are consistent but biased in small samples, and this bias is severe when some weights are extremely large or small. 
+
+- A simple workaround is trim units with extreme weights---discard units with too extreme weights (but trimming changes the estimand to a weird quantity that is causal yet difficult to interpret).
+
+- Another option is to use "stabilized" IPW. which normalizes the weights according to the population distribution: $$SIPW_i = \frac{\Pr(D_i)}{\Pr(D_i|X_i)} = \frac{D_i \Pr(D_i=1) + (1-D_i)(1- \Pr(D_i))}{D_i \hat{\pi}_i + (1-D_i)(1-\hat{\pi}_i)}.$$
+
+### Weighting Coding Example
+```{r}
+# recall from previous section we have: 
+# logit_fit <- glm(balance_formula, data = dat, family = binomial(link = logit))
+# pi.out <- logit_fit$fitted.values, which are the propensity scores 
+
+plot(density(pi.out[dat$abd==1]), lwd=2, main="Distribution of pscores")
+lines(density(pi.out[dat$abd==0]), lwd=2, lty=2)
+legend("topleft", legend=c("treated","controls"), lty=c(1,2), lwd=2)
+
+# with stabilized IPW weights
+ps = pi.out
+D = dat$abd
+PrD = mean(D)
+IPW = (D*PrD+(1-D)*(1-PrD))/(D*ps+(1-D)*(1-ps))
+
+# check the propensity scores after weighting
+plot(density(ps[D==1], weight=IPW[D==1]/sum(IPW[D==1])), lwd=2, main="Distribution of propensity scores: Weighted")
+lines(density(ps[D==0], weight=IPW[D==0]/sum(IPW[D==0])),lwd=2, lty=2)
+legend("topleft", legend=c("treated","controls"), lty=c(1,2), lwd=2)
+```
+
+Check omnibus balance:
+```{r}
+summary(lm(balance_formula, data = dat))
+summary(lm(balance_formula, weight = IPW, data = dat)) 
+```
+
+Now use weights in regression:
+```{r}
+summary(lm(educ ~ abd, data = dat) )
+summary(lm(educ ~ abd, weight = IPW, data = dat))
+```
 
