@@ -2,15 +2,16 @@
 
 Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered in 2024 Spring at UCLA.
 
+> Pset 3 is due on May 20 by midnight. Please submit a PDF! 
 
 ## TA Section Notes
 - [Math and Regression Review](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/prob_matrix_review.html)
   + [Basic Probability Theory](https://iqss.github.io/prefresher/probability-theory.html) and [Basic Linear Algebra](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/BasicMatrixAlgebra_review.pdf)
   + [OLS in Matrix Form](https://web.stanford.edu/~mrosenfe/soc_meth_proj3/matrix_OLS_NYU_notes.pdf) and [Standard Errors in OLS](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/se_ols.html)
 - [Potential Outcomes and Randomized Experiments](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/2-PO/potential_outcomes.html)
-- [Selection on Observables](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/matching.html)
+- [Selection on Observables (SOO)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/matching.html)
 - [Sensitivity Analysis](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/4-Sensitivity/sensitivity.html)
-- [Directed Acyclic Graphs (DAGs)](https://mixtape.scunning.com/03-directed_acyclical_graphs)
+- Directed Acyclic Graphs (DAGs): [Intro](https://mixtape.scunning.com/03-directed_acyclical_graphs) and [Examples](https://donskerclass.github.io/CausalEconometrics/DAGs.html)
 - [Difference-in-Differences (DiD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/5-DID/DID.html)
 - [Instrumental Variables (IV)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/6-IV/IV.html)
 - [Regression Discontinuity Design (RDD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RDD/RDD.html)
@@ -37,7 +38,7 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 
 - Stat 256: Causal Inference (UC Berkeley)
   - **Instructor(s)**: Peng Ding
-  - **Notes**: [A First Course in Causal Inference](https://arxiv.org/pdf/2305.18793.pdf) [[Python code](https://github.com/apoorvalal/ding_causalInference_python)][[R code](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ZX3VEV)] - Highly recommended!
+  - **Notes**: [A First Course in Causal Inference](https://arxiv.org/pdf/2305.18793.pdf) [[Python code](https://github.com/apoorvalal/ding_causalInference_python)][[R code](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ZX3VEV)]
 
 - STA 640: Causal Inference (Duke)
   - **Instructor(s)**: Fan Li
@@ -48,14 +49,18 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
   - **Slides**: https://cyrussamii.com/?page_id=3893
   - **Lab Handouts**: [Spring 2021 Handouts](https://www.zhoujunlong.com/Quant2_lab_2021sp/)
 
-- POLI 784: Linear Methods in Causal Inference (UNC)
-  - **Instructor(s)**: Ye Wang
-  - **Slides**: https://www.yewang-polisci.com/teaching
-
 - ECON 574: Applied Empirical Methods (Yale)
   - **Instructor(s)**: Paul Goldsmith-Pinkham
   - **Slides**: https://github.com/paulgp/applied-methods-phd
   - **Videos**: https://www.youtube.com/playlist?list=PLWWcL1M3lLlojLTSVf2gGYQ_9TlPyPbiJ
+
+- 47-873: Causal Econometrics (CMU)
+  - **Instructor(s)**: David Childers
+  - **Notes**: https://donskerclass.github.io/CausalEconometrics.html
+
+- POLI 784: Linear Methods in Causal Inference (UNC)
+  - **Instructor(s)**: Ye Wang
+  - **Slides**: https://www.yewang-polisci.com/teaching
 
 - ECON 2400: Applied Econometrics II (Brown)
   - **Instructor(s)**: Peter Hull
