@@ -1,0 +1,22 @@
+---
+title: "200C Section: Instrumental Variables"
+author: "Haotian (Barney) Chen"
+date: "May 31, 2024" 
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = 'center')
+```
+
+I develop this document based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. 
+
+## Instrumental Variables
+
+Here's an animation of how it works intuitively:
+<br>
+<p align="center">
+![ ](iv.gif)
+</p>
+(Credit: Apoorva Lal and Nick Huntington-Klein)

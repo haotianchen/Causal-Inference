@@ -1,0 +1,22 @@
+---
+title: "200C Section: Regression Discontinuity Design"
+author: "Haotian (Barney) Chen"
+date: "June 7, 2024" 
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = 'center')
+```
+
+I develop this document based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. 
+
+## Regression Discontinuity Design
+
+Here's an animation of how it works intuitively:
+<br>
+<p align="center">
+![ ](rdd.gif)
+</p>
+(Credit: Apoorva Lal and Nick Huntington-Klein)
