@@ -2,7 +2,7 @@
 
 Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered in 2024 Spring at UCLA.
 
-> Pset 3 is due on May 20 by midnight. Please submit a PDF! 
+> Problem set 4 is due by June 9! Please submit a PDF! 
 
 ## TA Section Notes
 - [Math and Regression Review](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/prob_matrix_review.html)
@@ -84,10 +84,3 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - [Causal Models for Longitudinal and Panel Data: A Survey](https://www.nber.org/papers/w31942) - Arkhangelsky and Imbens (2023)
 - [Recent Developments in Causal Inference and Machine Learning](https://www.annualreviews.org/content/journals/10.1146/annurev-soc-030420-015345) - Brand et al. (2023)
 
-### Community
-- [Online Causal Inference Seminar](https://sites.google.com/view/ocis/home)
-
-### Industry Applications
-- [EconML by Microsoft](https://econml.azurewebsites.net/)
-- [CausalML by Uber](https://causalml.readthedocs.io/en/latest/about.html)
-- [DoubleML](https://docs.doubleml.org/stable/index.html)
