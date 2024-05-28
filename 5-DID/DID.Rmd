@@ -15,7 +15,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = 'center')
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-I develop this document based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. 
+I develop this document based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. For better visualization of the tables, see this file in the HTML format. 
 
 ## Difference-in-Differences
 
