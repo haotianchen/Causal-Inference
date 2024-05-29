@@ -31,6 +31,7 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - POLISCI 450B: Political Methodology II (Stanford)
   - **Instructor(s)**: Apoorva Lal (TA for Jens Hainmueller)
   - **Slides**: https://apoorvalal.github.io/talks/2021-GraduateSequenceTeaching
+  - **Coding**: https://apoorvalal.github.io/notebook/causal_inference_notes/
 
 - Introduction to Causal Inference (online)
   - **Instructor(s)**: Brady Neal
