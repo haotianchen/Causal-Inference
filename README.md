@@ -33,6 +33,23 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
   - **Slides**: https://apoorvalal.github.io/talks/2021-GraduateSequenceTeaching
   - **Coding**: https://apoorvalal.github.io/notebook/causal_inference_notes/
 
+- POL-GA 1251: Quantitative Political Analysis II (NYU)
+  - **Instructor(s)**: Cyrus Samii
+  - **Slides**: https://cyrussamii.com/?page_id=3893
+  - **Lab Handouts**: [Spring 2021 Handouts](https://www.zhoujunlong.com/Quant2_lab_2021sp/)
+
+- POLI 784: Linear Methods in Causal Inference (UNC)
+  - **Instructor(s)**: Ye Wang
+  - **Slides**: https://www.yewang-polisci.com/teaching
+
+- 17.802 Quantitative Research Methods II (MIT)
+  - **Instructor(s)**: F. Daniel Hidalgo
+  - **Syllabus**: https://www.dhidalgo.me/teaching
+
+- [A Basic Checklist for Observational Studies in Political Science](https://yiqingxu.org/public/checklist.pdf) by Yiqing Xu
+
+-----
+
 - Introduction to Causal Inference (online)
   - **Instructor(s)**: Brady Neal
   - **Slides + Videos**: https://www.bradyneal.com/causal-inference-course
@@ -45,10 +62,11 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
   - **Instructor(s)**: Fan Li
   - **Slides**: https://www2.stat.duke.edu/~fl35/CausalInferenceClass.html
 
-- POL-GA 1251: Quantitative Political Analysis II (NYU)
-  - **Instructor(s)**: Cyrus Samii
-  - **Slides**: https://cyrussamii.com/?page_id=3893
-  - **Lab Handouts**: [Spring 2021 Handouts](https://www.zhoujunlong.com/Quant2_lab_2021sp/)
+- STATS 361: Causal Inference (Stanford)
+  - **Instructor(s)**: Stefan Wager
+  - **Notes**: https://web.stanford.edu/~swager/stats361.pdf
+
+-----
 
 - ECON 574: Applied Empirical Methods (Yale)
   - **Instructor(s)**: Paul Goldsmith-Pinkham
@@ -59,25 +77,16 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
   - **Instructor(s)**: David Childers
   - **Notes**: https://donskerclass.github.io/CausalEconometrics.html
 
-- POLI 784: Linear Methods in Causal Inference (UNC)
-  - **Instructor(s)**: Ye Wang
-  - **Slides**: https://www.yewang-polisci.com/teaching
-
 - ECON 2400: Applied Econometrics II (Brown)
   - **Instructor(s)**: Peter Hull
   - **Slides**: https://about.peterhull.net/metrix
 
-- STATS 361: Causal Inference (Stanford)
-  - **Instructor(s)**: Stefan Wager
-  - **Notes**: https://web.stanford.edu/~swager/stats361.pdf
-
+<!-- 
 - Causal Inference and Machine Learning
   - **Instructor(s)**: Guido Imbens
   - **Notes**: https://www.uni-potsdam.de/fileadmin/projects/empwifo/images/homepage/05_Workshop/imbens_potsdam_2019.pdf
+-->
 
-- 17.802 Quantitative Research Methods II (MIT)
-  - **Instructor(s)**: F. Daniel Hidalgo
-  - **Syllabus**: https://www.dhidalgo.me/teaching
 
 ### Current Literature
 - [What’s Trending in Difference-in-Differences? A Synthesis of the Recent Econometrics Literature](https://arxiv.org/pdf/2201.01194.pdf) - Roth et al. (2023)
