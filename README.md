@@ -14,7 +14,7 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - [Instrumental Variables (IV)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/6-IV/IV.html)
 - [Regression Discontinuity Design (RDD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RDD/RDD.html)
 
-## Resources (links might be expired)
+## Resources
 
 ### Other Courses
 (by Political Science Departments)
@@ -23,7 +23,6 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
   + **Instructor(s)**: Kosuke Imai
   + **Slides**: https://imai.fas.harvard.edu/teaching/cause.html
   + **Videos**: https://www.youtube.com/@imaikosuke/playlists :star:
- 
 - Gov2003: Causal Inference (Harvard)
   + **Instructor(s)**: Matthew Blackwell
   + **Slides**: https://github.com/mattblackwell/gov2003-f21-site/tree/main/files
@@ -51,7 +50,6 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - Stat 256: Causal Inference (UC Berkeley)
   + **Instructor(s)**: Peng Ding
   + **Notes**: [A First Course in Causal Inference](https://arxiv.org/pdf/2305.18793.pdf) [[Python code](https://github.com/apoorvalal/ding_causalInference_python)][[R code](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ZX3VEV)] :star:
- 
 - STATS 361: Causal Inference (Stanford)
   + **Instructor(s)**: Stefan Wager
   + **Notes**: https://web.stanford.edu/~swager/causal_inf_book.pdf
@@ -68,7 +66,6 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - Mixtape Sessions (online)
   + **Instructor(s)**: Scott Cunningham et al. 
   + **Labs**: https://github.com/Mixtape-Sessions :star:
-
 - A Comprehensive Course on DiD
   + **Instructor(s)**: Pedro H. C. Sant'Anna
   + **Slides**: https://psantanna.com/did-resources :star:
@@ -88,6 +85,7 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
  
 -----
 ### Catch up on the current literature (impossible; but here are some good resources)
+- [Difference-in-Differences Designs: A Practitioner's Guide](https://arxiv.org/abs/2503.13323) - Baker et al. (2025)
 - [What’s Trending in Difference-in-Differences? A Synthesis of the Recent Econometrics Literature](https://arxiv.org/pdf/2201.01194.pdf) - Roth et al. (2023)
 - [A Practical Introduction to Regression Discontinuity Designs: Foundations](https://arxiv.org/pdf/1911.09511.pdf) & [A Practical Introduction to Regression Discontinuity Designs: Extensions](https://arxiv.org/pdf/2301.08958.pdf) - Cattaneo et al. (2019; 2023)
 - [DiD literature](https://github.com/asjadnaqvi/DiD) - A Github repository that tracks current literature in DiD, with [Notes](https://asjadnaqvi.github.io/DiD/)
