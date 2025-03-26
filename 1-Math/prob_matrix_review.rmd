@@ -13,14 +13,14 @@ output:
 \newcommand{\Cov}{\mathbb{Cov}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-> This week's section will be a quick review of probability theory, linear algebra, and OLS. We will refer to several other documents, including the Math Prefresher (online), Basic Matrix Algebra Review (pdf), OLS in Matrix Form (pdf), and Standard Errors in OLS (pdf). For the PDF files, they are easier to view if you download them from the Github repository. 
+> This week's section will be a quick review of probability theory, linear algebra, and OLS. We will refer to several other documents, including the Math Prefresher (online), Basic Linear Algebra Review (pdf), OLS in Matrix Form (pdf), and Standard Errors in OLS (pdf). For the PDF files, they are easier to view if you download them from the Github repository. 
 
 ## Probability Theory
 The material we will use for a quick review of probability theory is the **Math Prefresher for Political Scientists** by Harvard Government Dept, which you can access [here](https://iqss.github.io/prefresher/06_probability.html). 
 
 
 ### Simulation
-For example, if we want to draw n sample size r times from normal distribution, calculate mean of each draw (i.e., sample mean), and get an 80% confidence interval for the sample mean, then compute coverage rate (proportion of estimates that fall within confidence interval):
+For example, if we want to draw n sample size r times from normal distribution, calculate mean of each draw (i.e., sample mean), get an 80% confidence interval for the sample mean, and then compute coverage rate (proportion of estimates that fall within confidence interval):
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -61,7 +61,7 @@ ggplot(result, aes(x = lower, xend = upper, y = replicate, yend = replicate, col
 
 
 ## Linear Algebra
-I prepare a short review of basic matrix algebra, which you can access [here](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/BasicMatrixAlgebra_review.pdf). You should also check the **Linear Algebra** section in the **Math Prefresher**. 
+I prepare a short review of basic linear algebra, which you can access [here](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/Linear_Algebra_Review.pdf). You should also check the **Linear Algebra** section in the **Math Prefresher**. 
 
 
 ### Matrix in R
