@@ -1,6 +1,6 @@
 # Causal Inference Notes
 
-TA Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered at UCLA in 2024 Spring, 2025 Spring. By Barney Chen. 
+Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered at UCLA in 2024 Spring, 2025 Spring. By Barney Chen. 
 
 ## TA Section Notes
 - [Probability, Linear Algebra, and Regression Review](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/prob_matrix_review.html)
@@ -9,8 +9,8 @@ TA Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazle
 - [Sensitivity Analysis](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/4-Sensitivity/sensitivity.html)
 - Directed Acyclic Graphs (DAGs): [Intro](https://mixtape.scunning.com/03-directed_acyclical_graphs) and [Examples](https://donskerclass.github.io/CausalEconometrics/DAGs.html)
 - Difference-in-Differences (DiD)
-  + [Classical 2x2 DiD](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/5-DID/DID.html)
-  + [Generalized DiD](https://yiqingxu.org/packages/fect/05-panel.html)
+  + [Classical 2x2 DiD, TWFE, Synthetic Control](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/5-DID/DID.html)
+  + [Recent Advancements in Generalized DiD](https://yiqingxu.org/packages/fect/05-panel.html)
 - [Instrumental Variables (IV)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/6-IV/IV.html)
 - [Regression Discontinuity Design (RDD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RDD/RDD.html)
 

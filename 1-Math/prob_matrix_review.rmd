@@ -13,6 +13,7 @@ output:
 \newcommand{\Cov}{\mathbb{Cov}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
+> This week's section will be a quick review of probability theory, linear algebra, and OLS. We will refer to several other documents, including the Math Prefresher (online), Basic Matrix Algebra Review (pdf), OLS in Matrix Form (pdf), and Standard Errors in OLS (pdf). For the PDF files, they are easier to view if you download them from the Github repository. 
 
 ## Probability Theory
 The material we will use for a quick review of probability theory is the **Math Prefresher for Political Scientists** by Harvard Government Dept, which you can access [here](https://iqss.github.io/prefresher/06_probability.html). 
@@ -97,7 +98,9 @@ solve(A)
 
 
 ## OLS
-Now, the first document you need to check is the **OLS in Matrix Form**, which you can access here. 
+The first document you need to check is the **OLS in Matrix Form**, which you can access [here](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/matrix_OLS_notes.pdf).  
+
+After reading it, here is a summary of the key OLS assumptions and properties. Make sure you understand them well!
 
 In the classical OLS regression model, we have the following assumptions:
 
@@ -118,7 +121,21 @@ Under these assumptions, we can estimate the OLS estimator $\hat{\beta} = (\X'\X
 + **Consistency**: $\hat{\beta} \xrightarrow{p} \beta$ as $n \rightarrow \infty$.
 + **Asymptotically Normality**: $\hat{\beta} \sim N(\beta, \sigma^2 (\X'\X)^{-1})$.
 
-### SEs
+### Heteroskedasticity-consistent SEs
+
+Now, please carefully read this document on heteroskedasticity-consistent standard errors (I really mean it!), which you can access [here](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/se_ols.pdf). 
+
+Recall from above that under the assumption of homoskedasticity ($\V[\epsilon_i | \X] = \sigma^2$), the variance of $\hat{\beta}$ is $\sigma^2 (\X'\X)^{-1}$. However, when the error terms have different variances, $\hat{\beta}$ is still unbiased but not efficient. The solution, which you often encounter in table footnotes in good empirical papers, is heteroskedasticity-consistent standard errors (people use the term "robust" SEs). 
+
+The heteroskedasticity-consistent estimator gives us:
+
+$$\V(\hat{\beta})_{\text{HC}} = (X'X)^{-1} X' \,\text{diag}(\hat{\epsilon}_1^2, \hat{\epsilon}_2^2, \dots, \hat{\epsilon}_n^2)\, X (X'X)^{-1}$$
+
+where $(X'X)^{-1}$ is often called the "bread", and $X' \,\text{diag}(\hat{\epsilon}_1^2, \hat{\epsilon}_2^2, \dots, \hat{\epsilon}_n^2)\, X$ is called the "meat". The difference in the HC estimators (HC0, HC1, HC2, HC3) is how we choose to substitute the "meat" to allow for non-constant variance. 
+
+In practice, it is recommended to use HC2. In R, you can use `sqrt(diag(vcovHC()))` from the `sandwich` package, or use `lm_robust` from Graeme's `estimatr` package (default is HC2). The default in STATA is HC1, and the default in the `sandwich` package is HC3. 
+
+One concept you don't want to get confused with is the **clustered standard errors**. Check this [paper](https://arxiv.org/abs/1710.02926) for a discussion on when to use clustered standard errors. 
 
 
 ### Calculate OLS regression manually in R
@@ -145,9 +162,9 @@ The purpose of Problem Set 0 is a refresher on the basic concepts of probability
 - Problem Set 0, Problem 1 <span style="color: darkred;">hint</span>: similar to the Example 5.7 in Math Prefresher.
 - Problem Set 0, Problem 2 <span style="color: darkred;">hint</span>: refer to the properties of expected values and variance. 
 - Problem Set 0, Problem 3 <span style="color: darkred;">hint</span>: refer to section 3 of **Basic Linear Algebra Review**. Also see **OLS in Matrix Form**. 
-- Problem Set 0, Problem 4 <span style="color: darkred;">hint</span>: 200B should already prepare you for terms such as bias, efficiency, consistency, WLLN, CLT, homoskedasticity, multicollinearity, etc. There are tons of materials online if you need a refresh. 
+- Problem Set 0, Problem 4 <span style="color: darkred;">hint</span>: 200B (or an equivalent course) should already prepare you for terms such as bias, efficiency, consistency, WLLN, CLT, homoskedasticity, multicollinearity, etc. There are tons of materials online if you need a refresh. 
 - Problem Set 0, Problem 5 <span style="color: darkred;">hint</span>: check the `Simulation` section. Run `help(distributions)` in your R console to see how to call distributions in R. 
 
 
 ### Acknowledgement
-I develop this document based on materials from the previous TAs for PS 200C (including Doeun Kim,  Soonhong Cho, Luke Sonnet, Aaron Rudkin, Ciara Sterbenz).
+I develop this document based on materials from the previous TAs for PS 200C (including Doeun Kim,  Soonhong Cho, Luke Sonnet, Aaron Rudkin, Ciara Sterbenz). I thank Soonhong Cho for sharing the material on SEs.

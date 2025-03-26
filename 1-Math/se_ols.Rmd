@@ -1,9 +1,7 @@
 ---
 title: "200C Section: Standard Errors in OLS"
-author: "Haotian (Barney) Chen"
-date: "April 5, 2024"
 output:
-  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +13,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-This document is a slight modification of notes from the previous TA, Soonhong Cho, who developed this document based on Imbens and Rubin, *Causal inference in statistics, social, and biomedical sciences* (2015), Aronow and Miller, *Foundations of agnostic statistics* (2019), Kosuke Imai's lecture notes, and Erin Hartman's lecture notes.
+This document is a slight modification of notes from the previous 200C TA, Soonhong Cho, who developed this document based on *Causal Inference in Statistics, Social, and Biomedical Sciences* (2015) by Imbens and Rubin, *Foundations of Agnostic Statistics* (2019) by Aronow and Miller, Kosuke Imai's lecture notes, and Erin Hartman's lecture notes.
 
 
 # Variance-Covariance of $\hat \beta$
@@ -23,21 +21,21 @@ This document is a slight modification of notes from the previous TA, Soonhong C
  - Let's start with the variance-covariance matrix of the OLS estimator $\hat{\beta}$.
      + First, note that
      $$
-     \begin{align*} 
+     \begin{aligned} 
      \hat{\beta} &= (\X'\X)^{-1}\X'Y \\
      &= (\X'\X)^{-1}\X'(\X \beta + \epsilon)      &(\text{model: } Y=\X \beta + \epsilon) \\
      &= \underbrace{(\X'\X)^{-1}\X'\X}_{\mathbb{I}_n} \beta + (\X'\X)^{-1}\X'\epsilon \\
      &= \beta + (\X'\X)^{-1}\X'\epsilon
-     \end{align*}
+     \end{aligned}
      $$
      + Then, we can derive the variance as:
      $$
-     \begin{align*} 
+     \begin{aligned} 
      \V[\hat{\beta}|\X] &= \V[\beta|\X] + \V[(\X'\X)^{-1}\X'\epsilon |\X] \\
      &= \V[(\X'\X)^{-1}\X'\epsilon |\X]  &(\beta \text{ is unkown constant})\\
      &= (\X'\X)^{-1}\X' \color{red}{\V[\epsilon|\X]} ((\X'\X)^{-1}\X')'  &(X\text{ is non-random conditional on }X) \\
      &= (\X'\X)^{-1}\X' \color{red}{\V[\epsilon|\X]} \X(\X'\X)^{-1}
-     \end{align*}
+     \end{aligned}
      $$
      
  - It's the general form of the variance of OLS estimator without any assumption. We know everything from data except for $\V[\epsilon|\X]$, so we have to estimate it. This looks like the following:
@@ -63,7 +61,7 @@ This document is a slight modification of notes from the previous TA, Soonhong C
  - Under the standard spherical errors assumption, the variance-covariance matrix has the simplest form as following. Let $\sigma_i^2 \equiv \V[\epsilon_i|\X]$ for notational simplicity.
  
  $$
- \begin{align*}
+ \begin{aligned}
  \V[\epsilon|\X] &= 
  \begin{bmatrix}
  \V[\epsilon_1|\X] & \text{Cov}[\epsilon_1, \epsilon_2|\X] & \cdots & \text{Cov}[\epsilon_1, \epsilon_n|\X] \\
@@ -87,16 +85,16 @@ This document is a slight modification of notes from the previous TA, Soonhong C
  \end{bmatrix}       &(\text{homoskedasticity: }  \V[\epsilon_i|\X] = \sigma_i^2=\sigma^2)\\
  \\
  &= \sigma^2 \mathbb{I}_n
- \end{align*}
+ \end{aligned}
  $$
  
   - Then the variance of $\hat{\beta}$ is:
   $$
-  \begin{align*} 
+  \begin{aligned} 
   \V[\hat{\beta}|\X] &= (\X'\X)^{-1}\X' \underbrace{\color{red}{\V[\epsilon|\X]}}_{\sigma^2 \mathbb{I}_n} \X(\X'\X)^{-1} \\
   &= \sigma^2 (\X'\X)^{-1} \underbrace{\X'\X (\X'\X)^{-1}}_{\mathbb{I}_n} \\
   &= \sigma^2 (\X'\X)^{-1}
-  \end{align*}
+  \end{aligned}
   $$
   
   - Since we don't know the population variance $\sigma^2$, we estimate it with some sample quantities, using the OLS residuals $\hat{\epsilon}=\mathbb{\mathbf{e}}=Y-\X \hat{\beta}$. The (unbiased) estimator is: $$\hat{\sigma}^2 = \frac{\mathbf{e}'\mathbf{e}}{n-k},$$ where $n$ is the sample size and $k$ is the number of regressors in the model. That is, we are using some kind of average squared error (sum of squared errors divided by the number of observations with a little correction) to estimate the variance. The correction part is just like the bessel correction for sample standard deviation (remember wed divided something by ${n-1}$ instead of $n$) where we account for the degrees of freedom the model parameters "ate up."
@@ -186,10 +184,10 @@ grid.arrange( arrangeGrob(plot_fun(homoskedastic, "X", "Y"),
 
  - The idea of White (1980) is the plug-in principle: if we can consistently estimate the components of $\V[\epsilon |\X]$, we can directly use this expression by replacing $\V[\epsilon |\X]$ with its estimate $\widehat{\V[\epsilon |\X]}$. And we use the residuals to estimate each error term. How? It seems hopeless estimating all the unknown quantities in $\V[\epsilon |\X]$ at first since it's ridiculous to estimate $(n \times n)$ matrix with only $n$ observations, but the key insight is:
  $$
- \begin{align*}
+ \begin{aligned}
  \V[\hat{\beta}|\X] &= (\X'\X)^{-1} \underbrace{\underset{k \times n}{\X'} \underset{n \times n}{\V[\epsilon|\X]} \underset{n \times k}{\X}}_{k \times k} (\X'\X)^{-1} \\
  &= (\X'\X)^{-1} \frac{1}{n} \sum_{i=1}^n \sigma_i^2 \mathbf{x}_i \mathbf{x}_i^T  (\X'\X)^{-1},
- \end{align*}
+ \end{aligned}
  $$ where we need to estimate way fewer parameters with $k << n$! Then we can estimate $\V[\hat{\beta}|\X]$ by replacing $\sigma_i^2$ with squared residuals $e_i^2$ which are all observed after fitting the model.
  
  - Then we have:
@@ -206,10 +204,10 @@ grid.arrange( arrangeGrob(plot_fun(homoskedastic, "X", "Y"),
  
  - **[Sandwich Estimator]** The so-called "sandwich" estimator formula offers a general formula for various HC estimators, with different finite-sample corrections:
  $$
- \begin{align*}
+ \begin{aligned}
  \underbrace{\widehat{\V(\hat{\beta}|\X)}}_{\text{sandwich}} &= \underbrace{(\X'\X)^{-1}}_{\text{bread}} \underbrace{\X' \color{red}{\widehat{\V[\epsilon|\X]}} \X }_{\text{meat}} \underbrace{(\X'\X)^{-1}}_{\text{bread}} \\
  &= (\X'\X)^{-1}  \X'\color{red}{\text{diag}(\hat{\epsilon}_i^2}) \X (\X'\X)^{-1}
- \end{align*}
+ \end{aligned}
  $$
      + **HC0**: When the "meat" matrix is filled with squared residuals in diagonal $$\X'\text{diag}(e_i^2)\X$$ as White (1980) proposed, it's labeled HC0.
      
@@ -287,21 +285,21 @@ bind_cols(lm_hc0$std.error, lm_hc1$std.error, lm_hc2$std.error, lm_hc3$std.error
       
   - Let's begin with a simple linear model with two error components (assuming homoskedastic errors across clusters, $\sigma_j^2=\sigma^2$, for simplicity):
   $$
-  \begin{align*}
+  \begin{aligned}
   y_{ij} &= \beta_0 + \beta_1 x_{ij} + \epsilon_{ij} \\
   &= \beta_0 + \beta_1 x_{ij} + \underbrace{\color{blue}{v_j}}_{\text{cluster}} + \underbrace{\color{red}{u_{ij}}}_{\text{unit}},
-  \end{align*}
+  \end{aligned}
   $$
 where $$\color{blue}{v_j} \overset{iid}{\sim} N(0, \rho \sigma^2) \text{ denotes cluster-level error component}$$ and $$\color{red}{u_{ij}} \overset{iid}{\sim} N(0, (1-\rho) \sigma^2) \text{ denotes unit-level error component}.$$ The two components $v_j$ and $u_{ij}$ are assumed  to be independent of each other.
   
       + $\rho \in (0,1)$ is called the within-cluster correlation (or intracluster correlation coefficient, "ICC"), which measures the degree of clustered dependence of units. When $\rho=1$, all units within a cluster are considered to be identical. When $\rho=0$, there is no correlation of units within a cluster, and all observations are considered to be independent of each other, so the standard iid setting.
       + $\sigma^2$ is the variance of the composite error:
       $$
-      \begin{align*}
+      \begin{aligned}
       \V[\epsilon_{ij}] &= \V[v_j + u_{ij}] \\
       &= \V[v_j] + \V[u_{ij}] \\
       &= \underbrace{(\rho \sigma^2)}_{\text{cluster}} + \underbrace{(1-\rho)\sigma^2}_{\text{unit}} = \sigma^2
-      \end{align*}
+      \end{aligned}
       $$
       
       + The covraince between two units $i$ and $k$ in the same cluster $j$ is $\rho \sigma^2$: $$\text{Cov}[\epsilon_{ij}, \epsilon_{kj}]=\rho \sigma^2$$
