@@ -1,62 +1,67 @@
 ---
-title: '200C Section: Probability and Linear Algebra Review'
+title: 'Pol Sci 200C Section: Probability, Linear Algebra, and OLS Refersher'
 author: 'Haotian (Barney) Chen'
-date: "April 5, 2024"
+date: "April 4, 2025"
 output:
   html_document: default
 ---
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\Y}{\mathbf{Y}}
+\newcommand{\X}{\mathbf{X}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\Cov}{\mathbb{Cov}}
+\newcommand{\independent}{\perp\!\!\!\perp}
 
-> I develop this document largely based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho, which are derived from past course notes by Luke Sonnet, Aaron Rudkin, Ciara Sterbenz.
 
 ## Probability Theory
-
-- Problem Set 1, Problem 1 <span style="color: darkred;">hint</span>: similar to the Example 5.7 (Math Prefresher) that we go through.
-- Problem Set 1, Problem 2 <span style="color: darkred;">hint</span>: refer to the properties of expected values and variance. 
+The material we will use for a quick review of probability theory is the **Math Prefresher for Political Scientists** by Harvard Government Dept, which you can access [here](https://iqss.github.io/prefresher/06_probability.html). 
 
 
 ### Simulation
-This is a <span style="color: darkred;">hint</span> for Problem Set 1, Problem 5. Run `help(distributions)` to see how to call distributions in R. 
-
-For example, if we want to Draw n sample size r times from normal distribution, calculate mean of each draw (i.e., sample mean), and get an 80% confidence interval for the sample mean, then compute coverage rate (proportion of estimates that fall within confidence interval).
+For example, if we want to draw n sample size r times from normal distribution, calculate mean of each draw (i.e., sample mean), and get an 80% confidence interval for the sample mean, then compute coverage rate (proportion of estimates that fall within confidence interval):
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 
 sample_mean_ci <- function(n, r, pars){
-  mu <- pars[1] #true mean is mu
-  replicate(r, { #use replicate function to do r times
-    samp <- rnorm(n, mean=pars[1], sd=sqrt(pars[2]))
+  mu <- pars[1] # true mean is mu
+  replicate(r, { # use replicate function to do r times
+    samp <- rnorm(n, mean = pars[1], sd = sqrt(pars[2]))
     data.frame(mean = mean(samp),
-               #using t-distribution confidence interval (CI)
+               # using t-distribution confidence interval (CI)
                lower = mean(samp) - sd(samp)/sqrt(n)*qt(1 - 0.2/2, length(samp)-1),
                upper = mean(samp) + sd(samp)/sqrt(n)*qt(1 - 0.2/2, length(samp)-1))
   }, simplify = FALSE) %>% bind_rows() %>%
     rownames_to_column(var = "replicate") %>%
-    mutate(cover = lower < mu & upper > mu) %>% #coverage of true mean
+    mutate(cover = lower < mu & upper > mu) %>% # coverage of true mean
     mutate(coverage = mean(cover))
 }
 
 # store result: e.g., sample size 100, repeat 1000 times, Normal(1, 4)
 true_mean <- 1
-result <- sample_mean_ci(n=20, r=1000, pars=c(true_mean, 4))
+result <- sample_mean_ci(n = 20, r = 1000, pars = c(true_mean, 4))
 
 # plot the first 100 of these intervals: for illustration purposes
-ggplot(result, aes(x = lower, xend = upper, y = replicate, yend = replicate, col=cover)) +
-  # differentiate colors (`col`) based on `cover` indicating whether it contains true mean
+ggplot(result, aes(x = lower, xend = upper, y = replicate, yend = replicate, col = cover)) +
   geom_segment() + 
-  geom_vline(xintercept = true_mean) + #true mean here
-  annotate(geom="text", x=0.5, y=95, size=4, 
-           label=paste0("Coverage Rate:", round(result$coverage, 3)*100, "%")) +
+  geom_vline(xintercept = true_mean) + # true mean here
+  annotate(geom = "text", x = 0.5, y = 95, size = 4, 
+           label = paste0("Coverage Rate:", round(result$coverage, 3)*100, "%")) +
   # plot first 100 rows by `limits` + adjust y-axis ticks by `breaks`
-  scale_y_discrete(breaks = seq(25, 100, by=25), limits = seq(1, 100, by=1)) +
-  labs(title="80% Confidence Intervals for 100 random samples", x="Sample Mean", y="Replicate") +
-  scale_colour_discrete(name  ="Interval Covers Truth?") +
-  theme_bw() + theme(legend.position = "bottom")
+  scale_y_discrete(breaks = seq(25, 100, by = 25), limits = seq(1, 100, by = 1)) +
+  labs(title = "80% Confidence Intervals for 100 random samples", x = "Sample Mean", y = "Replicate") +
+  scale_colour_discrete(name = "Interval Covers Truth?") +
+  theme_bw() + 
+  theme(legend.position = "bottom")
 
 # want to save batches of results to a table? search `kable`
 ```
 
+
 ## Linear Algebra
+I prepare a short review of basic matrix algebra, which you can access [here](https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/BasicMatrixAlgebra_review.pdf). You should also check the **Linear Algebra** section in the **Math Prefresher**. 
+
 
 ### Matrix in R
 ```{r}
@@ -91,9 +96,34 @@ solve(A)
 ```
 
 
-### Calculate OLS regression manually 
+## OLS
+Now, the first document you need to check is the **OLS in Matrix Form**, which you can access here. 
+
+In the classical OLS regression model, we have the following assumptions:
+
++ (A.1) **Linearity**: $\Y = \X \mathbb{\beta} + \epsilon$
++ (A.2) **Strict Exogeneity**: $\E[\epsilon | \X] = 0$. The explanatory variables are exogenous (uncorrelated with the error term). It implies: 
+  - (A.2.a) Weak Exogeneity: $\E[\X_i\epsilon_i] = 0$. The explanatory variable is orthogonal to the error term. 
+  - (A.2.b) Unconditional Mean: $\E[\epsilon_i] = 0$. The error term has zero mean.
++ (A.3) **Full Rank**: $\text{rank}(\X)=k$ (we need $\X'\X$ to be invertible). A violation is *perfect multicollinearity* when some explanatory variables are linearly dependent.
++ (A.4) Spherical Errors: $\V[\epsilon | \X] = \E[\epsilon\epsilon'|\X] = \sigma^2 I_n$. It implies:
+  - (A.4.a) **Homoskedasticity**: $\V[\epsilon_i | \X] = \sigma^2$. Error terms have constant variance. No heteroskedasticity. 
+  - (A.4.b) **No Autocorrelation of Errors**: $\Cov[\epsilon_i, \epsilon_j | \X] = \E[\epsilon_i \epsilon_j | \X] = 0$ for $i \neq j$. No serial correlation.
++ (A.5) **Normality**: $\epsilon | \X \sim N(0, \sigma^2I_n)$. The error terms are normally distributed.
+
+Under these assumptions, we can estimate the OLS estimator $\hat{\beta} = (\X'\X)^{-1}\X'Y$. Here are the properties of OLS Estimator: 
+
++ **Unbiasedness**: $\E[\hat{\beta} | \X] = \beta$. 
++ **Efficiency**: The Gauss–Markov theorem states that the OLS estimator is BLUE (Best Linear Unbiased Estimator). 
++ **Consistency**: $\hat{\beta} \xrightarrow{p} \beta$ as $n \rightarrow \infty$.
++ **Asymptotically Normality**: $\hat{\beta} \sim N(\beta, \sigma^2 (\X'\X)^{-1})$.
+
+### SEs
+
+
+### Calculate OLS regression manually in R
 ```{r}
-set.seed(1234)
+set.seed(2025)
 n <- 100
 
 x1 <- rnorm(n)
@@ -108,5 +138,16 @@ solve(t(X) %*% X) %*% t(X) %*% y
 lm(y ~ x1 + x2 + x3)$coef # the results are the same!
 ```
 
-- Problem Set 1, Problem 3 <span style="color: darkred;">hint</span>: refer to section 3 of **Basic Linear Algebra Review**. Also see **OLS in Matrix Form**. 
-- Problem Set 1, Problem 4 <span style="color: darkred;">hint</span>: 200B should already prepare you for terms such as bias, efficiency, consistency, WLLN, CLT, homoskedasticity, multicollinearity, etc. There are tons of materials online if you need a refresh. 
+
+## Problem Set Hints
+The purpose of Problem Set 0 is a refresher on the basic concepts of probability theory, linear algebra, and OLS regression, so that you are prepared for the material in 200C.
+
+- Problem Set 0, Problem 1 <span style="color: darkred;">hint</span>: similar to the Example 5.7 in Math Prefresher.
+- Problem Set 0, Problem 2 <span style="color: darkred;">hint</span>: refer to the properties of expected values and variance. 
+- Problem Set 0, Problem 3 <span style="color: darkred;">hint</span>: refer to section 3 of **Basic Linear Algebra Review**. Also see **OLS in Matrix Form**. 
+- Problem Set 0, Problem 4 <span style="color: darkred;">hint</span>: 200B should already prepare you for terms such as bias, efficiency, consistency, WLLN, CLT, homoskedasticity, multicollinearity, etc. There are tons of materials online if you need a refresh. 
+- Problem Set 0, Problem 5 <span style="color: darkred;">hint</span>: check the `Simulation` section. Run `help(distributions)` in your R console to see how to call distributions in R. 
+
+
+### Acknowledgement
+I develop this document based on materials from the previous TAs for PS 200C (including Doeun Kim,  Soonhong Cho, Luke Sonnet, Aaron Rudkin, Ciara Sterbenz).
