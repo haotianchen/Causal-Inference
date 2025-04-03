@@ -3,8 +3,9 @@ title: 'Pol Sci 200C Section: Probability, Linear Algebra, and OLS Refersher'
 author: 'Haotian (Barney) Chen'
 date: "April 4, 2025"
 output:
-  html_document: 
-    math_method: katex
+  html_document:
+    math_method: mathjax
+    mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ---
 \newcommand{\y}{\mathbf{y}}
 \newcommand{\Y}{\mathbf{Y}}

@@ -3,8 +3,9 @@ title: 'Pol Sci 200C Section: Potential Outcomes and Randomized Experiments'
 author: 'Haotian (Barney) Chen'
 date: "April 11, 2025"
 output:
-  html_document: 
-    math_method: katex
+  html_document:
+    math_method: mathjax
+    mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ---
 
 ```{r setup, include=FALSE}
