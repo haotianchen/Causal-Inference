@@ -1,9 +1,10 @@
 ---
-title: '200C Section: Potential Outcomes and Randomized Experiments'
+title: 'Pol Sci 200C Section: Potential Outcomes and Randomized Experiments'
 author: 'Haotian (Barney) Chen'
-date: "April 12, 2024 and April 19, 2024"
+date: "April 11, 2025"
 output:
-  html_document: default
+  html_document: 
+    math_method: katex
 ---
 
 ```{r setup, include=FALSE}
@@ -13,42 +14,30 @@ knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-I develop this document largely based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho, which are derived from past course notes by Luke Sonnet, Aaron Rudkin, Ciara Sterbenz.
 
 ## Potential Outcomes
+
+Fundamental concepts: 
 
 * Treatment status: $D_i = 1$ if $i$ is treated, $D_i = 0$ otherwise
 * Potential outcome under the treatment condition: $Y_{1i}$
 * Potential outcome under the control condition: $Y_{0i}$
 * Observed outcome: $Y_i = D_i Y_{1i} + (1-D_i) Y_{0i} = Y_{0i} + (Y_{1i}-Y_{0i})D_i$
 * Individual-level treatment effect: $\tau_i = Y_{1i} - Y_{0i}$
-* SUTVA: one version of the treatment, no interference between units (unit $i$'s potential outcomes are only a function of its own treatment status, not other units' treatment)
+* SUTVA: one version of the treatment, no interference between units (unit $i$'s potential outcomes are only a function of its own treatment status, not other units' treatments)
 
-Now let's consider a randomized experiment with six observations, of which three units were randomly assigned to a treatment. The table below shows the data observed from this experiment, augmented with columns for potential outcomes and the individual treatment effect. We fill in all the cells based on the observed information, denoting unknown information with "?". Think about how $D_i$ function as "switch" that determines whether you observe $Y_{1i}$ or $Y_{0i}$.
+Now let's consider a randomized experiment with six observations and 50\% of the units were randomly assigned to a treatment. The (science) table below shows the data observed from this experiment, augmented with columns for potential outcomes and the individual treatment effect. We fill in all the cells based on the observed information, denoting unknown information with "?". From this table, it is intuitive to see that $D_i$ acts like a **switch** that determines which potential outcome we observe for unit $i$. 
 
-```{r echo=FALSE, warning=FALSE, message=FALSE}
-library(tidyverse)
-library(knitr)
-library(kableExtra)
-```
-
-```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
-library(tidyverse)
-library(knitr)
-library(kableExtra)
-tab<- tibble(i=1:6, Y0=rep("", 6), Y1=rep("", 6), Tau=rep("", 6),
-             D=c(1, 0, 0, 1, 0, 1), Y=c(8, 2, 4, 6, 12, 10))
-kable(tab, booktabs = T, align = rep('c', 6),
-      col.names = c("$i$", "$Y_{0i}$", "$Y_{1i}$", "$\\tau_i$", "$D_i$", "$Y_i$")) %>% 
-  kable_styling(full_width = F, position = "center", font_size = 15)
-```
-  
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
-tab <- tibble(i=1:6, Y0=rep("", 6), Y1=rep("", 6), Tau=rep("", 6),
-             D=c(1, 0, 0, 1, 0, 1), Y=c(8, 2, 4, 6, 12, 10))
+library(tidyverse)
+library(knitr)
+library(kableExtra)
 
-tibble(i=1:6, Y0=c("?", 2, 4, "?", 12, "?"), Y1=c(8, "?", "?", 6, "?", 10), Tau=rep("?", 6),
-       D=c(1, 0, 0, 1, 0, 1), Y=c(8, 2, 4, 6, 12, 10)) %>%
+tab <- tibble(i = 1:6, Y0 = rep("", 6), Y1 = rep("", 6), Tau = rep("", 6),
+             D = c(1, 0, 0, 1, 0, 1), Y = c(8, 2, 4, 6, 12, 10))
+
+tibble(i = 1:6, Y0 = c("?", 2, 4, "?", 12, "?"), Y1 = c(8, "?", "?", 6, "?", 10), Tau = rep("?", 6),
+       D = c(1, 0, 0, 1, 0, 1), Y = c(8, 2, 4, 6, 12, 10)) %>%
   kable(booktabs = T, align = rep('c', 6),
         col.names = c("$i$", "$Y_{0i}$", "$Y_{1i}$", "$\\tau_i$", "$D_i$", "$Y_i$")) %>% 
   kable_styling(full_width = F, position = "center", font_size = 15) %>% 
@@ -58,7 +47,7 @@ tibble(i=1:6, Y0=c("?", 2, 4, "?", 12, "?"), Y1=c(8, "?", "?", 6, "?", 10), Tau=
   add_footnote("counterfactual values are unobserved (grey-colored)")
 ```
  
-**Fundamental problem of causal inference**: there are lots of ?. So, causal inference is a severe "missing data problem" in such sense. The potential outcomes are pre-treatment characteristics, i.e., they are fixed attributes of the units. They are latent, ready to be popped up in response to treatment. They don't change when you change treatment -- they are what would happen under a given treatment. The treatment doesn't change the potential outcomes, it changes which potential outcomes you see. We can observe only one potential outcomes out of two for each unit simultaneously.
+**Fundamental problem of causal inference**: there are lots of ?. So, the fundamental problem of causal inference is a big **missing data problem**. The potential outcomes are latent --- the treatment does not change the potential outcomes, it only changes which potential outcomes you see.
 
 <br>
 
@@ -87,11 +76,13 @@ tibble(i=1:6, Y0=c(6, 2, 4, 1, 12, 3), Y1=c(8, 5, 8, 6, 18, 10), Tau=c(2, 3, 4, 
   add_footnote("counterfactual values are magically observed (light-green)")
 ```
 
-* ATE: (2+3+4+5+6+7)/6
-* ATT: (2+5+7)/3
-* ATC: (3+4+6)/3
+* ATE: (2+3+4+5+6+7)/6 = 4.5
+* ATT: (2+5+7)/3 = 4.667
+* ATC: (3+4+6)/3 = 4.333
 
-Actually, we can rewrite the ATE as a weighted average: ATE = $Pr(D_i=1)$ ATT + $Pr(D_i=0)$ ATC. Here you can consider $Pr(D_i=1)$ as the probability/proportion treated. **Hint**: you will be using this equation in Q2, Pset 2 --- using the law of iterated expectations. 
+An important and useful trick: we can rewrite the ATE as a weighted average of ATT and ATC. $$\text{ATE} = \text{Pr}(D_i=1)*\text{ATT} + \text{Pr}(D_i=0)*\text{ATC}$$ 
+
+Here you can consider $\text{Pr}(D_i=1)$ as the probability/proportion treated. <span style="color:maroon;">Hint</span>: you will need this equation in Q2, Pset1 --- using the law of iterated expectations. 
 
 <br>
 
@@ -101,15 +92,17 @@ Actually, we can rewrite the ATE as a weighted average: ATE = $Pr(D_i=1)$ ATT + 
 * Bias decomposition: DiM = ATT + Bias
 
 $$
-\begin{align*}
-\text{DiM} = \E[Y_{i} | D_i =1]-\E[Y_{i} | D_i=0] &= \E[Y_{1i} | D_i =1]-\E[Y_{0i} | D_i=0] &(\text{consistency})  \\ 
-&= \E[Y_{1i} | D_i =1] - \E[Y_{0i} | D_i=1] + \E[Y_{0i} | D_i=1] -\E[Y_{0i} | D_i=0] \\
-&= \text{ATT} + \underbrace{(\E[Y_{0i} | D_i=1] -\E[Y_{0i} | D_i=0])}_{\text{baseline bias}}
-\end{align*}
+\begin{aligned}
+\text{DiM} &= \E[Y_{i} | D_i =1]-\E[Y_{i} | D_i=0] \\
+&= \E[Y_{1i} | D_i =1]-\E[Y_{0i} | D_i=0] &(\text{consistency; recall Test 1 during lecture})  \\ 
+&= \E[Y_{1i} | D_i =1] - \E[Y_{0i} | D_i=1] + \E[Y_{0i} | D_i=1] - \E[Y_{0i} | D_i=0]  & (\text{borrowing } \E[Y_{0i} | D_i=1])\\
+&= \text{ATT} + (\E[Y_{0i} | D_i=1] -\E[Y_{0i} | D_i=0])
+\end{aligned}
 $$
-The baseline/selection bias is the unidentified ATT, which arises when $\E[Y_{0i} | D_i=1] \neq  \E[Y_{0i} | D_i=0]$. For example, suppose we want to learn the effects of regular exercise on heart disease. We start by comparing the rates of heart disease between individuals who exercise regularly and those who do not. However, it is possible that those who choose to exercise regularly already had a lower risk for heart disease even if they do not exercise. 
 
-**Hint** (again) for Pset 2 Q2: we can repeat the similar steps for ATC --- think about what term to borrow (add and then remove) to construct the ATC. 
+The baseline/selection bias $(\E[Y_{0i} | D_i=1] -\E[Y_{0i} | D_i=0])$ arises when $\E[Y_{0i} | D_i=1] \neq  \E[Y_{0i} | D_i=0]$. 
+
+<span style="color:maroon;">Hint</span> for Pset1 Q2: we can repeat the similar decomposition steps for ATC --- think about what term to borrow (add and then remove) to construct the ATC. 
 
 
 <br>
@@ -118,152 +111,145 @@ The baseline/selection bias is the unidentified ATT, which arises when $\E[Y_{0i
 
 ## Identification and Estimation in Randomized Experiments
 
-> - **Identification**: if you can observe data from an entire population (or, infinite data), can you learn about your quantity of interest?
+> - **Identification**: if you can observe data from an entire population, can you learn about your quantity of interest?
 - **Estimation**: given your finite amount of data on a sample, how well can you learn about your quantity of interest?
 
-Recall that random assignment guarantees **ignorability**: $$\{Y_{1i}, Y_{0i}\} \independent D_i$$ (a.k.a. "exchangeability," "unconfoundedness," "no unmeasured confounder," "exogeneity," "no omitted variable," etc.): the potential outcomes are independent of the treatments, or treatment status $D_i$ conveys no information whatsoever about the potential values of $Y_{1i}, Y_{0i}$. It makes the treated and untreated units identical in terms of potential outcomes on average; the treatment group and control group are "exchangeable"; the two groups are "balanced" on observables and unobservables. 
+Recall that random assignment guarantees **ignorability**: $$\{Y_{1i}, Y_{0i}\} \independent D_i$$ (a.k.a. "exchangeability," "unconfoundedness," "no unmeasured confounder," "exogeneity," "no omitted variable," etc.): the potential outcomes are independent of the treatments, or treatment status $D_i$ conveys no information whatsoever about the potential values of $Y_{1i}, Y_{0i}$. It makes the treated and untreated units identical in terms of potential outcomes on average; the treatment group and control group are "exchangeable"; the two groups are "balanced" on observables and unobservables. This is the identification assumption our life will depend upon. 
 
-Let's go back to our example and define the (population) average treatment effect for the treated ($\tau_{ATT}$) and propose an unbiased estimator for this estimand. The estimand is $\tau_{ATT} = \E[Y_{1i} - Y_{0i}|D_i=1]$. Given randomization of treatment, an unbiased estimator is the **difference-in-means** for the treated and control. Why? 
+Let's go back to the 6 units example and define the (population) average treatment effect for the treated ($\tau_{ATT}$) and propose an unbiased estimator for this estimand. The estimand is $\tau_{ATT} = \E[Y_{1i} - Y_{0i}|D_i=1]$. Given randomization of treatment, an unbiased estimator is the **difference-in-means** for the treated and control, here's why:
 
- - From ignorability, we have
+- From ignorability, we have
   $\E[Y_{1i}] = \E[Y_{1i}|D_i=1] = \E[Y_{1i}|D_i=0]$ and $\E[Y_{0i}] = \E[Y_{0i}|D_i=1] = \E[Y_{0i}|D_i=0]$
- - In this case, **ATE=ATT**, as follows:
-  \begin{align*}
-  \tau_{ATT} &= \E[Y_{1i}-Y_{0i}|D_i=1] \\
-  &= \underbrace{\E[Y_{1i}|\color{red}{D_i=1}]}_{(1)} - \underbrace{\E[Y_{0i}|\color{red}{D_i=1}]}_{(2)} \\
+- In this case, **ATE=ATT**, as follows:
+
+$$
+  \begin{aligned}
+  \tau_{ATT} &= \E[Y_{1i}-Y_{0i}|D_i=1] = \E[Y_{1i}|D_i=1] - \E[Y_{0i}|D_i=1] & (\text{linearity of expectation})\\
   &= \E[Y_{1i}] - \E[Y_{0i}]   & (\text{ignorability}) \\
   &= \E[Y_{1i} - Y_{0i}] = \tau_{ATE}
-  \end{align*}
-  Here (1) is the average of treated potential outcomes among treated units and (2) is the average of untreated potential outcomes among treated units.
-  - This estimator is **difference-in-means**: $$\hat{\tau}_{ATE} = \underbrace{\frac{1}{n_1}\sum_{i=1}^{n}D_iY_i}_{\text{average among treated}} - \underbrace{\frac{1}{n_0}\sum_{i=1}^{n}(1-D_i)Y_i}_{\text{average among control}}$$
-  where $n_1$ is the number of treated units (so $\sum_{i}^{n}D_i=n_1$).
-  - In our example, plugging in the data gives us an estimate:
-  
-  $$\frac{1}{3}(\underbrace{1 \cdot 8 + 0 \cdot 2 + 0 \cdot 4 + 1 \cdot 6 + 0 \cdot 12 + 1 \cdot 10}_{\sum_{i=1}^{n_1}D_iY_i}) - \frac{1}{3}(\underbrace{0 \cdot 8 + 1 \cdot 2 + 1 \cdot 4 + 0 \cdot 6 + 1 \cdot 12 + 0 \cdot 10}_{\sum_{i=1}^{n_0}(1-D_i)Y_i}) = \frac{1}{3}(8+6+10) - \frac{1}{3}(2+4+12)=2$$
+  \end{aligned}
+$$
+
+- This estimator is **difference-in-means**: $$\hat{\tau}_{ATE} = \underbrace{\frac{1}{N_1}\sum_{i=1}^{n}D_iY_i}_{\text{average among treated}} - \underbrace{\frac{1}{N_0}\sum_{i=1}^{n}(1-D_i)Y_i}_{\text{average among control}}$$
+where $N_1$ is the number of treated units and $N_0$ is the number of untreated units.
+
+
 ```{r, warning=FALSE, message=FALSE}
 # DiM estimator
 tab %>% summarize(dim = mean(Y[D == 1]) - mean(Y[D == 0]))
 ```
 
- - Under treatment independence, the DiM is an unbiased estimator for the ATE.
- 
- - Generally, the goal of identification analysis (Manski 1995, 2007) is to establish the domain of consensus among researchers with regard to what can be learned about causal quantities of interest from the data alone (e.g., using difference-in-means estimator to get ATE in classical randomized experiment is unquestionable: nobody argues against it). Identification problems should be handled *before* the estimation and statistical inference in finite sample.
- 
- - Why useful: identification analysis can formally characterize the roles of identification assumptions---so that we can evaluate the extent to which the conclusions of research depend on assumptions (explicitly or implicitly) imposed by researcher.
- 
- - We want to build a bridge from what we want to what we can get: formally, identification translates the causal
-question of interest into a statistical problem defined only by observed data. We start by writing down formally the causal quantity of interest (estimand) and then see what changes we need to "turn  it into" fully observable quantities (summarized by estimator) that can be computed from data. At each intermediate step (from estimand to fully observables) we just use some algebra and statistical tricks, with invoking our identification assumptions.
+- Under treatment independence, the DiM is an unbiased estimator for the ATE.
+<!-- - Generally, the goal of identification analysis (Manski 1995, 2007) is to establish the domain of consensus among researchers with regard to what can be learned about causal quantities of interest from the data alone (e.g., using difference-in-means estimator to get ATE in classical randomized experiment is unquestionable: nobody argues against it). Identification problems should be handled *before* the estimation and statistical inference in finite sample. -->
+<!-- - Why useful: identification analysis can formally characterize the roles of identification assumptions --- so that we can evaluate the extent to which the conclusions of research depend on assumptions (explicitly or implicitly) imposed by researcher. -->
+<!-- - We want to build a bridge from what we want to what we can get: formally, identification translates the causal question of interest into a statistical problem defined only by observed data. We start by writing down formally the causal quantity of interest (estimand) and then see what changes we need to "turn it into" fully observable quantities (summarized by estimator) that can be computed from data. At each intermediate step (from estimand to fully observables) we just use some algebra and statistical tricks, with invoking our identification assumptions. -->
  
 **Example: Classical Randomized Experiment (with the assumption of ignorability)**
  
- a) Identification of **ATE** with Difference-in-Means estimator
-  \begin{align*}
-  \tau_{ATE} &= \E[Y_{1i}-Y_{0i}] \\
-  &= \E[Y_{1i}] - \E[Y_{0i}] & (\text{linearity of expectation}) \\
-  &= \E[Y_{1i}|\color{red}{D_i=1}] - \E[Y_{0i}|\color{red}{D_i=0}]   & (\text{ignorability:}\{y_{1i}, y_{0i}\} \independent D_i) \\
-  &= \underbrace{\E[Y_{i}|D_i=1] - \E[Y_{i}|D_i=0]}_{\text{observed difference in means}}    & (\text{consistency, SUTVA}) \\
-  &= \frac{1}{n_1}\sum_{i=1}^{n}D_iY_i - \frac{1}{n_0}\sum_{i=1}^{n}(1-D_i)Y_i   &(\text{sample analog})\\
-  &= \text{DiM}
-  \end{align*}
-  - We needed ignorability ($\{y_{1i}, y_{0i}\} \independent D_i.$), consistency ($Y_{di}=Y_i|D_i=d$), and  SUTVA (no interference and one-version-of-treatment) assumptions for our identification.
+a) Identification of **ATE** with Difference-in-Means estimator
+$$
+  \begin{aligned}
+  \tau_{ATE} &\equiv \E[Y_{1i}-Y_{0i}] = \E[Y_{1i}] - \E[Y_{0i}] & (\text{linearity of expectation}) \\
+  &= \color{red}{\E[Y_{1i}|D_i=1] - \E[Y_{0i}|D_i=0]}   & (\text{ignorability:}\{y_{1i}, y_{0i}\} \independent D_i) \\
+  &= \E[Y_{i}|D_i=1] - \E[Y_{i}|D_i=0] & (\text{consistency, SUTVA}) \\
+  &= \frac{1}{n_1}\sum_{i=1}^{n}D_iY_i - \frac{1}{n_0}\sum_{i=1}^{n}(1-D_i)Y_i = \text{DiM}
+  \end{aligned}
+$$
+- We needed ignorability ($\{y_{1i}, y_{0i}\} \independent D_i$), consistency ($Y_{di}=Y_i|D_i=d$), and  SUTVA (no interference and one-version-of-treatment) assumptions for our identification.
  
  <br>
  
- b) Identification of **ATT** with Difference-in-Means estimator
- \begin{align*}
- \tau_{ATT} &\equiv \E[Y_{1i} - Y_{0i}|D_i=1] \\
- &= \E[Y_{1i}|D_i=1] - \E[Y_{0i}|\color{red}{D_i=1}]  &\text{(linearity of expectation)} \\
- &= \E[Y_{1i}|D_i=1] - \E[Y_{0i}|\color{red}{D_i=0}]  &\text{(a weaker ignorability :}Y_{0i} \independent D_i) \\
+b) Identification of **ATT** with Difference-in-Means estimator
+$$
+\begin{aligned}
+ \tau_{ATT} &\equiv \E[Y_{1i} - Y_{0i}|D_i=1] = \E[Y_{1i}|D_i=1] - \E[Y_{0i}|D_i=1]  &\text{(linearity of expectation)} \\
+ &= \color{red}{\E[Y_{1i}|D_i=1] - \E[Y_{0i}|D_i=0]}  &\text{(a weaker ignorability: }Y_{0i} \independent D_i) \\
  &= \E[Y_{i}|D_i=1] - \E[Y_{i}|D_i=0] &\text{(consistency, SUTVA)} \\
  &= \text{DiM}
- \end{align*}
- - We needed only half of the ignorability assumption to identify the ATT: $Y_{0i} \independent D_i$. The ignorability assumption is used only for moving from the second line to the third line, the terms colored red. It means that we do not have to assume that treated potential outcomes are ignorable, so it's a weaker assumption than ATE.
+ \end{aligned}
+$$
+
+- We needed a weaker version of ignorability assumption to identify the ATT: $Y_{0i} \independent D_i$.
  
  <br>
  
- c) Identification of **ATC** with Difference-in-Means estimator
- \begin{align*}
- \tau_{ATC} &\equiv \E[Y_{1i} - Y_{0i}|D_i=0] \\
- &= \E[Y_{1i}|\color{red}{D_i=0}] - \E[Y_{0i}|D_i=0]  &\text{(linearity of expectation)} \\
- &= \E[Y_{1i}|\color{red}{D_i=1}] - \E[Y_{0i}|D_i=0]  &\text{(a weaker ignorability: }Y_{1i} \independent D_i) \\
+c) Identification of **ATC** with Difference-in-Means estimator
+$$
+ \begin{aligned}
+ \tau_{ATC} &\equiv \E[Y_{1i} - Y_{0i}|D_i=0] = \E[Y_{1i}|D_i=0] - \E[Y_{0i}|D_i=0]  &\text{(linearity of expectation)} \\
+ &= \color{red}{\E[Y_{1i}|D_i=1] - \E[Y_{0i}|D_i=0]}  &\text{(a weaker ignorability: }Y_{1i} \independent D_i) \\
  &= \E[Y_{i}|D_i=1] - \E[Y_{i}|D_i=0]   &\text{(consistency, SUTVA)} \\
  &= \text{DiM}
- \end{align*}
- - Similar to the ATT case, another weaker ignorability assumption is required, but now for only treated potential outcomes: $Y_{1i} \independent D_i$. We don't have to assume that untreated potential outcomes are ignoble.
+ \end{aligned}
+$$
+
+- We needed a weaker version of ignorability assumption to identify the ATT: $Y_{1i} \independent D_i$.
  
   <br>
   
- d) The ATE can be expressed as a regression coefficient:
+d) The ATE can be expressed as a regression coefficient:
 $$
- \begin{align*}
+ \begin{aligned}
  Y_i &= D_i Y_{1i} + (1-D_i) Y_{0i} \\
  &= Y_{0i} + (Y_{1i}-Y_{0i})D_i \\
  &= \bar Y_0 + (\bar Y_1-\bar Y_0) D_i + \{(Y_{0i} - \bar Y_0) + D_i[(Y_{1i}-Y_{0i}) - (\bar Y_1-\bar Y_0)]\} \\
  &= \underbrace{\bar Y_0}_{\alpha} + \underbrace{\tau_{ATE}}_{\beta} D_i + \underbrace{[(Y_{0i} - \bar Y_0) + D_i(\tau_i - \tau_{ATE})]}_{\epsilon_i}
- \end{align*}
+ \end{aligned}
 $$
-  - Under random assignment, the regression gives us an unbiased estimate of the ATE.
-
-<br>
-
-Takeaway: First, identification analysis clarifies what assumptions are required to get to the inferential goal. Second, we needed stronger identification assumption for ATE than ATT or ATC. In most cases ATE is more desirable estimand as it speaks to the whole population, whereas ATT and ATC are for some subpopulation, namely those who are treated/untreated (but ATT is often useful). **To make a stronger causal claim, we need stronger assumption(s)!** Law of decreasing credibility: The credibility of inference decreases with the strength of the assumptions maintained.
-
+  
+- Under random assignment, the regression gives us an unbiased estimate of the ATE.
 
 ***
 
 ## Randomization Inference (RI)
 
+### Uncertainty and Hypothesis Testing
 
-### RI: Sharp null and randomization/reference/null distribution
- - SATE v. PATE: inference on PATE is harder than on SATE, because we have to account for sampling variation, on top of the variation induced by the treatment D. 
- 
- - A (conservative) SE estimator is $$\hat{SE}_{ATE} = \sqrt{\frac{\hat{\sigma}^2_{Y_1}}{n_1} + \frac{\hat{\sigma}^2_{Y_0}}{n_0}},$$ which relies on the expectation that $\text{cov}(\bar Y_1, \bar Y_0) = 0$. 
- 
- - The t-test for ATE relies on some (asymptotic) *approximation*: we expect that the sampling distribution of test statistic would look like t-distribution because: 1) t converges to the normal in large sample so the CLT will save us, or 2) t can even account for estimation uncertainty in small sample by allowing more extreme values at both ends of normal. The two-sample t-test with unequal variances is used: $$t = \frac{\hat{\tau}_{ATE}}{\sqrt{\frac{\hat{\sigma}^2_{Y_1}}{n_1} + \frac{\hat{\sigma}^2_{Y_0}}{n_0}}},$$ where $n_1$ and $n_0$ are the number of treated units and control units. From basic statistical theory, we know that $t_n \overset{d}{\rightarrow} N(0,1)$, so we can use it when sample size is large. 
- 
- - We can then build the 95\% CI: $\hat{\tau}_{\text{ATE}} \pm 1.96*\hat{SE}_\hat{\text{ATE}}$.
- 
-Putting them into (pseudo)codes: suppose we have treated and control from data (**Hint**: this relates to Pset2, Q3)
+- SATE v. PATE: inference on PATE is harder than on SATE, because we have to account for sampling variation, on top of the variation induced by the treatment D. If the sampling is random, $\E[\text{SATE}] = \text{PATE}$. 
+- A (conservative --- proof in lecture slides!) SE estimator (Neyman estimator) is $$\widehat{SE}_{ATE} = \sqrt{\frac{\hat{\sigma}^2_{Y_1}}{N_1} + \frac{\hat{\sigma}^2_{Y_0}}{N_0}}$$ It relies on the expectation that $\text{cov}(\bar Y_1, \bar Y_0) = 0$. 
+- The two-sample t-test with unequal variances is then: $$t = \frac{\hat{\tau}_{ATE}}{\sqrt{\frac{\hat{\sigma}^2_{Y_1}}{N_1} + \frac{\hat{\sigma}^2_{Y_0}}{N_0}}}$$ where $N_1$ and $N_0$ are the number of treated units and control units. We know that $t \overset{d}{\rightarrow} N(0,1)$ for large $n$. 
+- We can then construct the 95\% CI: $\hat{\tau}_{\text{ATE}} \pm 1.96 * {\widehat{\text{SE}}}_{\widehat{\text{ATE}}}$.
+
+Putting them into pseudocodes: suppose we have treated and control from data (<span style="color:maroon;">Hint</span>: this relates to Pset1, Q3)
+
 ```{r eval=FALSE}
 DIM = mean(treated) - mean(control) #\hat ATE
-SE = sqrt(var(treated) / length(treated) 
-          + var(control) / length(control))
+SE = sqrt(var(treated) / length(treated) + var(control) / length(control))
 t_statistic = DIM / SE
 CI = (DIM - 1.96*SE, DIM + 1.96*SE)
 
 # can we reject the null? 
 abs(t_statistic) > 1.96
 ```
- 
- 
- - Randomization inference assumes almost nothing. It allows us to make distribution-free inferences (e.g., reliance on normality, etc), which allows us to deal with small sample size. It exploits the randomness of treatment randomization: given data, "randomness" is induced only by the very physical act of random treatment assignment, which is known to researcher who "designed" it. Thus, we don't have to rely on "large" sample approximation, which motivates the use of RI.
- 
- - RI poses sharp null hypothesis. <span style="color:red;">Sharp null</span> typically implies no effect for every unit. Thus, **under such a sharp null, both potential outcomes are known for each unit --- being either directly observed or imputed through the sharp null ($H_0: \tau_i = Y_{1i} - Y_{0i} = 0$, so $Y_{1i}=Y_{0i}$).** That's the key idea of RI (recall the fundamental problem of causal inference --- a **hint** for Pset 2, Q4).
- 
- - RI is conducted as follows. Under the specified sharp null, we can fill in all potential outcomes. With those sharp null potential outcomes, we would **reshuffle** the treatment assignment in certain ways, and compute the test statistic (e.g., DiM). That is, the sampling distribution of the test statistic under sharp null (i.e., randomization distribution) is obtained by simulating all possible random assignments (when the number of possible assignments is too large, we approximate by a large random sample of possible assignments). Then we make inference: e.g., compare the observed test-statistic to the randomization distribution and judge how “extreme” it is (hypothesis test with $p$-value); calculate the standard deviation of the reference distribution (standard error); construct RI confidence intervals.
- 
-<br>
+
+### The Idea of Randomization Inference
+- **(Weak) null**: $H_0: \tau_{ATE} = 0$.
+- **Sharp null**: $H_0: Y_{1i} = Y_{0i}$.
+- Randomization inference (RI) poses sharp null, under which we can fill in all the potential outcomes and can compute the ATE under each possible treatment assignment. Then we can compute the sampling distribution of the test statistic under the sharp null and make inference.
+
+<!-- - RI is conducted as follows:  -->
+<!--   + Under the sharp null, we can fill in all potential outcomes.  -->
+<!--   + With those sharp null potential outcomes, we would **reshuffle** the treatment assignment and compute the test statistic (e.g., DiM). That is, the sampling distribution of the test statistic under sharp null (i.e., randomization distribution) is obtained by simulating all possible random assignments (when the number of possible assignments is too large, we approximate by a large random sample of possible assignments).  -->
+<!--   + Then we make inference: e.g., compare the observed test-statistic to the randomization distribution and judge how "extreme" it is (hypothesis test with $p$-value); calculate the standard deviation of the reference distribution (standard error); construct RI confidence intervals. -->
+
 
 ### RI with small data: Fisher's exact test
- - Randomization inference gives exact p-values when all possible random assignments can be simulated--"exact" because there are no approximations based on assumptions about the shape of the sampling distribution, and **we can get the randomization distribution exactly**. The procedure to get randomization distribution is as follows:
- 
-  0) Specify our sharp null hypothesis: $H_0: \tau_i=\tau_0$, where $\tau_0$ is any constant. We typically set $\tau_0=0$.
-  1) Fill in missing potential outcomes under the sharp null: replace all the unobserved potential outcomes with revealed outcome $\pm \tau_0$, where the sharp null hypothesis is $\tau_i=\tau_0$. For example, if sharp null is $\tau_0=0$ (no individual-level treatment effect), then $Y_{di}=Y_{i},$ where $D_i\ \in \{0,1\}$.
-  2) Obtain every possible treatment assignment vector $\omega \in \Omega$, by the permutation of original treatment assignment vector.
-  3) Calculate the test statistic under each $\omega$ (don't forget to make each assignment "turn on" the observed outcome). In our case, compute the DiM estimates.
-  4) Repeat the step 3 for all possible treatment assignment to get the reference distribution.
 
- - Pros: exact (no need for asymptotics), works for any test statistic.
- - Cons: sharp null is restrictive, not quite feasible for large experiments because of computational intensity. 
+1) Calculate the test statistic (e.g., DiM) under the observed treatment assignment. In our case, it is $\hat{\tau}_{\text{ATE}}$.
+2) Specify the sharp null hypothesis: $H_0: \tau_i=\tau_0$, where $\tau_0$ is any constant. We typically set $\tau_0=0$. Then fill in missing potential outcomes under the sharp null: replace all the unobserved potential outcomes with revealed outcome $\pm \tau_0$.
+3) Obtain every possible treatment assignment vector $\omega \in \Omega$, by the permutation of original treatment assignment vector.
+4) Calculate the test statistic under each $\omega$ (don't forget to make each assignment "turn on" the observed outcome) to get the null distribution $\hat{\tau}(\omega)$s. How extreme is the observed test statistic compared to the null distribution?
+
+Here's an example of how to do this in R: 
 
 ```{r}
 # Data from Table 2-1, Gerber and Green, "Field Experiments" (2012)
-tiny_data <- tibble(i = 1:7, #unit index
-                      Y0 = c(10, 15, 20, 20, 10, 15, 15),#untreated potential outcomes
-                      Y1 = c(15, 15, 30, 15, 20, 15, 30), #treated potential outcomes
-                      tau = Y1-Y0) %>% #individual treatment effect
-  mutate(D = c(1,0,0,0,0,0,1)) %>% #one possible treatment assignment
-  mutate(Y = if_else(D == 1, Y1, Y0)) #observed outcome: Y = D*Y1 + (1-D)*Y0
+tiny_data <- tibble(i = 1:7, # unit index
+                      Y0 = c(10, 15, 20, 20, 10, 15, 15), # untreated potential outcomes
+                      Y1 = c(15, 15, 30, 15, 20, 15, 30), # treated potential outcomes
+                      tau = Y1-Y0) %>% # individual treatment effect
+  mutate(D = c(1, 0, 0, 0, 0, 0, 1)) %>% # one possible treatment assignment
+  mutate(Y = if_else(D == 1, Y1, Y0)) # observed outcome: Y = D*Y1 + (1-D)*Y0
 ```
 
 ```{r, echo=FALSE}
@@ -277,125 +263,94 @@ tiny_data %>%  #science table
   add_footnote("counterfactual values are unobserved (grey-colored)")
 ```
 
+##### Step 1:
 ```{r}
-#observed treatment assignment
-tiny_data$D #let's call it `\omega_obs`
+# observed treatment assignment
+tiny_data$D # `\omega_obs`
 
-#observed ate estimate
+# observed ate estimate
 obs_dim <- tiny_data %>% summarize(estimate = mean(Y[D==1]) - mean(Y[D==0])) %>% pull(estimate)
-obs_dim #so it's observed test statistic given `\omega_obs`
+obs_dim
 ```
 
- - One coding tip: make your own functions for the *repeated* part of a given task, not for the part implemented only once. In our procedure, which part is repeated? The potential outcomes are *fixed* under our specified sharp null hypothesis. [The treatment assignment is assigned, then observed outcomes is created according to that. We compute our test-statistic, DiM]. Then repeat.
-
+##### Step 2:
 ```{r}
-#fix potential outcomes implied by sharp null tau_i=tau_0
-tau_0 <- 0 #sharp null hypothesis: tau_i=tau_0=0, no individual-level treatment effect
+# fix potential outcomes implied by sharp null tau_i = tau_0
+tau_0 <- 0
 
-#1.fill in potential outcomes under sharp null
+# fill in potential outcomes under sharp null
 tiny_data <- tiny_data %>%
-  mutate(Y0_sn = Y, Y1_sn = Y) %>% #start with observed Y
-  mutate(Y0_sn = ifelse(D==1, Y1_sn - tau_0, Y0_sn), #if treated unit, assign Y1-tau_0 to Y0_sn
-         Y1_sn = ifelse(D==0, Y0_sn + tau_0, Y1_sn)) #if untreated unit, assign Y0+tau_0 to Y1_sn
+  mutate(Y0_sn = Y, Y1_sn = Y) %>%
+  mutate(Y0_sn = ifelse(D==1, Y1_sn - tau_0, Y0_sn),
+         Y1_sn = ifelse(D==0, Y0_sn + tau_0, Y1_sn))
 ```
 
-We'll use complete randomization: exactly 2 units are treated (no simple random assignment!). The probability of receiving treatment for each unit is $\Pr(D_i)=2/7$.
-
-$\Omega$: since we choose 2 treated units from 7, there're 21 possible random assignments (${7 \choose 2}=21$).
+##### Step 3:
+We'll use complete randomization: exactly 2 units are treated. The probability of receiving treatment for each unit is $\Pr(D_i)=2/7$. For $\Omega$, since we choose 2 treated units from 7, there are 21 possible assignments (${7 \choose 2}=21$) in total.
 
 ```{r}
-#get Omega
-Omega <- combn(length(tiny_data$D), sum(tiny_data$D), tabulate, nbins=length(tiny_data$D)) %>% 
+Omega <- combn(length(tiny_data$D), sum(tiny_data$D), tabulate, nbins = length(tiny_data$D)) %>% 
   as_tibble()
-Omega #we can see that 6th is observed 
+Omega # the 6th is the observed one
+```
 
-#make a function for exact reference distribution -- note that there's no potential outcome part
-ri_exact <-function(data, permutations, c){
+##### Step 4:
+```{r}
+# make a function for RI
+ri_exact <- function(data, permutations, c){
   data %>% 
-    #2.choose c-th possible assignment
-    mutate(D_sim = permutations[, c]) %>%
-    mutate(Y_sim = ifelse(D==1, Y1_sn, Y0_sn)) %>% #update outcomes by c-th assignment
-    #3.compute test statistic
+    mutate(D_sim = permutations[, c]) %>% # c is the column index for which assignment
+    mutate(Y_sim = ifelse(D==1, Y1_sn, Y0_sn)) %>% 
     summarize(dim = mean(Y_sim[D_sim==1]) - mean(Y_sim[D_sim==0])) %>% pull()
 }
 
-#exact randomization/reference/permutation dist (exact sampling dist of DiM under sharp null)
+# get the null distribution 
 exact_dist <- map_dbl(1:ncol(Omega), function(c) ri_exact(tiny_data, Omega, c))
 exact_dist
 ```
 
-  - We've got the randomization distribution of DiM. Now make inference: hypothesis test. (Fisher) exact p-value is defined as $$p_{\text{exact}} \equiv \Pr(|\hat{\theta}(\omega)| \geq |\hat{\theta}_{\text{obs}}|),$$ where $\hat{\theta}(\omega)$ is our test statistic as a function of each possible treatment assignment $\omega$. We reject the null hypothesis ($\tau_i=0$ for  all $i$) if $p \leq 0.05$, for instance.
-
-```{r, echo=FALSE, message=FALSE}
-bind_cols(1:21, t(Omega), exact_dist) %>% 
-  kable(booktabs = T, align = rep('c', 8),
-        col.names=c("$\\omega$", "$D_1$", "$D_2$", "$D_3$", "$D_4$", 
-                    "$D_5$", "$D_6$", "$D_7$", "$DiM$"), escape = FALSE) %>% 
-  kable_styling(full_width = F, position = "center", font_size = 15) %>%
-  column_spec(1, border_right = T) %>% row_spec(6, bold = TRUE) %>% 
-  add_footnote("observed values in boldface")
-```
+Now, $$p \equiv \Pr(|\hat{\tau}(\omega)| \geq |\hat{\tau}_{\text{ATE}}|)$$
 
 ```{r}
-#exact p-value
-mean(exact_dist >= obs_dim) #one-tailed test used to calculate p-value
-exact_p <- mean(abs(exact_dist) >= abs(obs_dim)) #two-tailed test
-exact_p
-
-#exact 95% Confidence Intervals
-quantile(exact_dist, c(0.025, 0.975))
+mean(abs(exact_dist) >= abs(obs_dim)) # p-value
 ```
 
-```{r, echo=FALSE, fig.align='center'}
-#null distribution is totally different from t-distribution as sample size is too small (N=7)
-ggplot(tibble(est=exact_dist), aes(x=est)) +
-  geom_histogram(aes(y=..density..), binwidth=.5, alpha=.7) +
-  stat_function(fun = dt, args = list(df = 7-1), linetype="dashed", col="blue") + #overlay t-dist
-  geom_vline(xintercept = obs_dim, col="red") + #observed difference-in-means
-  geom_vline(xintercept = -obs_dim, col="red") + #-observed difference-in-means
-  annotate(geom="text", x=6, y=.55, size=4, label="How extreme observed value is if this dist is true?") +
-  annotate(geom="text", x=8.5, y=.5, size=4, label=paste0("Exact p-value:", round(exact_p, 3))) +
-  annotate(geom="text", x=8.5, y=.45, size=4,
-           label=expression(paste("Pr(|", hat(theta), "(", omega, ")|", ">=6.5)"))) +
-  annotate(geom="text", x=2, y=.3, size=3.5, label=paste0("t-dist, df=7")) +
-  labs(title="Null Distribution for DiM", x=("Estimate")) + 
-  theme_minimal()
-```
 
-What if we used two-sample t-test with unequal variance? 
+<!-- What if we used two-sample t-test with unequal variance?  -->
+
+<!-- ```{r} -->
+<!-- t.test(tiny_data$Y ~ tiny_data$D, alternative = "two.sided", -->
+<!--        mu=0, paired = FALSE, var.equal = FALSE) -->
+<!-- ``` -->
+
+<!-- Dramatically different! Here the t-approximation works terrible because 1) the number of observations is too small ($N=7$) and 2) the distribution of estimates is not normal (Think about the contrast between $X_1 \sim N(5, 2)$ and $X_2 \sim exp(\lambda=1)$! The t confidence intervals for $X_1$ drawn from normal worked well, i.e., achieve target coverage rate 95\%, even with small sample size, whereas $X_2$ drawn from exponential did not.). -->
+
+### RI with large data
+The randomization inference can be conducted in large sample. The key idea is the same as the exact test: under the sharp null, we can fill in all potential outcomes. Since the number of possible treatment assignment gets too large when $n$ is large, exact computation is almost impossible. One way to get around this is to use Monte Carlo simulations to get the sampling distribution of the test statistic. 
+
+1) Calculate the test statistic (e.g., DiM) under the observed treatment assignment ($\hat{\tau}_{\text{ATE}}$).
+2) Specify the sharp null hypothesis: $H_0: \tau_i=\tau_0$ and fill in missing potential outcomes under the sharp null: replace all the unobserved potential outcomes with revealed outcome $\pm \tau_0$.
+3) Sample another assignment vector $\omega_i$ according to the original randomization procedure: simple random assignment or reshuffle the treatment vector (complete randomization case). Also update observed outcomes $Y_i$ according to simulated assignment.
+4) Calculate the test statistic under $\omega_i$. In our case, compute the DiM estimate.
+5) Repeat steps (3) and (4) many many times get the null distribution $\hat{\tau}(\omega_i)$s and make inference.
+
+
+Here's an example of how to do this in R. <span style="color:maroon;">Hint</span>: this code chunk relates to Q4, Pset1.
 
 ```{r}
-t.test(tiny_data$Y ~ tiny_data$D, alternative = "two.sided",
-       mu=0, paired = FALSE, var.equal = FALSE)
-```
-  
-Dramatically different! Here the t-approximation works terrible because 1) the number of observations is too small ($N=7$) and 2) the distribution of estimates is not normal (Think about the contrast between $X_1 \sim N(5, 2)$ and $X_2 \sim exp(\lambda=1)$! The t confidence intervals for $X_1$ drawn from normal worked well, i.e., achieve target coverage rate 95\%, even with small sample size, whereas $X_2$ drawn from exponential did not.).
+set.seed(2025)
 
-
-### RI with larger data
-  - The randomization inference can be conducted in large sample. The key idea is the same as the exact test: **under the sharp null, we can fill in all potential outcomes**. Since the number of possible treatment assignment is unfathomable (${n \choose n_1}$, so $\Omega$ is too large when $n$ is large) exact computation (of sampling distribution, of p-value, of CIs, etc.) is almost impossbile. So we rely on Monte Carlo approximation--just conduct simulation many times--to get the sampling distribution of chosen test statistic. The following procedure is thus easier than "exact" computation.
-  
-  0) Specify our sharp null hypothesis.
-  1) Fill in missing potential outcomes under the sharp null: replace all the unobserved potential outcomes with revealed outcome $\pm \tau_0$, where the sharp null hypothesis is $\tau_i=\tau_0$. For example, if sharp null is $\tau_0=0$ (no individual-level treatment effect), then $Y_{di}=Y_{i},$ where $D_i\ \in \{0,1\}$.
-  2) Sample another assignment vector $\omega_i$ according to the original randomization procedure: simple random assignment or reshuffle the treatment vector (complete randomization case). Also update observed outcomes $Y_i$ according to simulated assignment.
-  3) Calculate the test statistic. In our case, compute the DiM estimates.
-  4) Repeat the steps 2-3 many times to get the reference distribution. The approximation would be arbitrarily accurate as the number of draws increases.
-  
-  - If assumptions of theoretical approximations like t-test is proper, the difference between conventional $p$-values and RI $p$-values may be negligible (when randomization is simple, outcome is similar to normal, and the sample is large enough). But when the randomization procedure is complicated (e.g., some combinations of complicated blocking and clustering), sample is small, or outcome is too skewed, RI is a good alternative to sidestep the difficulty in evaluating uncertainty engaged in complicated sampling/randomization procedure.
-  
-  - Now let's play with R code. **Hint**: this code chunk relates to Q4, Pset2.
-```{r}
-set.seed(1234)
-#creat a randomized experiment dataset
-n <- 500
+n <- 1000
 large_sample <- tibble(i = 1:n,
                        Y0 = rnorm(n),
-                       Y1 = Y0 + rnorm(n, .2, .05), #add noise to treatment effect of size .2
+                       Y1 = Y0 + rnorm(n, .1, .05),
                        tau = Y1-Y0) %>%
-  #notice that randomization procedure is simple random assignment, not complete randomization
+  # let's do a simple random assignment
   mutate(D = sample(c(0, 1), n, replace = TRUE, prob = c(.5, .5))) %>%
   mutate(Y = if_else(D==1, Y1, Y0))
 ```
+
+Here's the first ten rows of the simulated data: 
 
 ```{r, echo=FALSE}
 large_sample[1:10,] %>%  #display first 10 units only
@@ -412,25 +367,17 @@ large_sample[1:10,] %>%  #display first 10 units only
 ## Monte Carlo approximation for randomization inference
 
 ri_function <- function(Y, D, M){
-  #1. observed ate estimate
   obs_dim <- mean(Y[D==1]) - mean(Y[D==0])
-
-  #2. create potential outcomes under sharp null
   Y0_sn = Y
   Y1_sn = Y # you may want to handle NA here
   
-  #3. resample M times and calculate DiM under new assignment
-  res  <- map_dbl(1:M, function(empty_input){
-    #3-1. new treatment assignment
+  res <- map_dbl(1:M, function(empty_input){
     new_assignment <- sample(D, length(D), replace = FALSE)
-    
-    #3-2. DiM under the new assignment
-    new_dim <- mean(Y1_sn[new_assignment == 1]) - mean(Y0_sn[new_assignment == 0])
-    
+    new_dim <- mean(Y1_sn[new_assignment==1]) - mean(Y0_sn[new_assignment==0])
     return(new_dim)
   })
   
-  #RI p-value (2-sided)
+  # RI p-value (2-sided)
   p_value = sum(abs(res) >= abs(obs_dim))/length(res)
   
   return(list(simulation_dt = res,
@@ -441,126 +388,125 @@ ri_function <- function(Y, D, M){
 ir_result <- ri_function(large_sample$Y, large_sample$D, 100)
 ir_result$p_value
 
-#plot
-plot(density(ir_result$simulation_dt),
-     main = "Null Distribution for DiM")
-abline(v = ir_result$obs_dim, col="blue")
+# make a plot
+plot(density(ir_result$simulation_dt), main = "Null Distribution for DiM")
+abline(v = ir_result$obs_dim, col="darkblue")
 ```
 
 <br>
 
 ***
 
-## Coding Practice
+## Extra Homework Hints
 
-**1. Classical Randomized Experiment**
-```{r}
-# a "science table" with 10 samples from N=1000 under classical randomized experiment
-sample_data <- tibble(i = 1:1000, # unit index
-                      Y0 = rnorm(1000), # untreated potential outcomes (suppose they're pure random noise)
-                      Y1 = Y0 + 1,  # treated potential outcomes
-                      tau = Y1-Y0) %>% # individual treatment effect (we set it up as 1)
-  mutate(D = sample(c(0, 1), 1000, replace = TRUE, prob = c(.5, .5))) %>% # simple random assignment
-  mutate(Y = if_else(D == 1, Y1, Y0)) # observed outcome: Y = D*Y1 + (1-D)*Y0
-```
+<!-- **1. Classical Randomized Experiment** -->
+<!-- ```{r} -->
+<!-- # a "science table" with 10 samples from N=1000 under classical randomized experiment -->
+<!-- sample_data <- tibble(i = 1:1000, # unit index -->
+<!--                       Y0 = rnorm(1000), # untreated potential outcomes (suppose they're pure random noise) -->
+<!--                       Y1 = Y0 + 1,  # treated potential outcomes -->
+<!--                       tau = Y1-Y0) %>% # individual treatment effect (we set it up as 1) -->
+<!--   mutate(D = sample(c(0, 1), 1000, replace = TRUE, prob = c(.5, .5))) %>% # simple random assignment -->
+<!--   mutate(Y = if_else(D == 1, Y1, Y0)) # observed outcome: Y = D*Y1 + (1-D)*Y0 -->
+<!-- ``` -->
 
-```{r, echo=FALSE, warning=FALSE}
-sample_data[1:10,] %>%  #display first 10 units only
-  kable(booktabs = T, digits=3, align = rep('c', 6),
-        col.names = c("$i$", "$Y_{0i}$", "$Y_{1i}$", "$\\tau_i$", "$D_i$", "$Y_i$")) %>% 
-  kable_styling(full_width = F, position = "center", font_size = 15) %>%
-  column_spec(2, color = ifelse(sample_data[1:10,"D"]==1, "lightgrey", "black")) %>% 
-  column_spec(3, color = ifelse(sample_data[1:10,"D"]==0, "lightgrey", "black")) %>% 
-  column_spec(4, color = "lightgrey") %>% 
-  add_footnote("counterfactual values are unobserved (grey-colored)")
-```
+<!-- ```{r, echo=FALSE, warning=FALSE} -->
+<!-- sample_data[1:10,] %>%  #display first 10 units only -->
+<!--   kable(booktabs = T, digits=3, align = rep('c', 6), -->
+<!--         col.names = c("$i$", "$Y_{0i}$", "$Y_{1i}$", "$\\tau_i$", "$D_i$", "$Y_i$")) %>%  -->
+<!--   kable_styling(full_width = F, position = "center", font_size = 15) %>% -->
+<!--   column_spec(2, color = ifelse(sample_data[1:10,"D"]==1, "lightgrey", "black")) %>%  -->
+<!--   column_spec(3, color = ifelse(sample_data[1:10,"D"]==0, "lightgrey", "black")) %>%  -->
+<!--   column_spec(4, color = "lightgrey") %>%  -->
+<!--   add_footnote("counterfactual values are unobserved (grey-colored)") -->
+<!-- ``` -->
 
-```{r, echo=FALSE, warning=FALSE, fig.align="center"}
-# visualize as you randomize
-ggplot(data = sample_data %>% mutate(D = ifelse(D==1, "Treated", "Control")),
-       aes(x=D, y=Y, group=D, col=D)) +
-  geom_jitter(width = 0.1, height = 0.1, alpha=0.4) +
-  geom_point(stat="summary", fun="mean", col="black") +
-  geom_errorbar(stat="summary", fun.data="mean_se",
-                fun.args = list(mult = 1.96), width=0, col="black") +
-  stat_summary(aes(label = round(stat(y), 2)), fun = 'mean', geom = 'text', col = 'black', hjust = 1.5) +
-  labs(y="Outcome", x="Conditions") +
-  ggtitle("Visualize as you randomize: data and two group means") +
-  theme_bw() + theme(legend.position = "none")
-```
+<!-- ```{r, echo=FALSE, warning=FALSE, fig.align="center"} -->
+<!-- # visualize as you randomize -->
+<!-- ggplot(data = sample_data %>% mutate(D = ifelse(D==1, "Treated", "Control")), -->
+<!--        aes(x=D, y=Y, group=D, col=D)) + -->
+<!--   geom_jitter(width = 0.1, height = 0.1, alpha=0.4) + -->
+<!--   geom_point(stat="summary", fun="mean", col="black") + -->
+<!--   geom_errorbar(stat="summary", fun.data="mean_se", -->
+<!--                 fun.args = list(mult = 1.96), width=0, col="black") + -->
+<!--   stat_summary(aes(label = round(stat(y), 2)), fun = 'mean', geom = 'text', col = 'black', hjust = 1.5) + -->
+<!--   labs(y="Outcome", x="Conditions") + -->
+<!--   ggtitle("Visualize as you randomize: data and two group means") + -->
+<!--   theme_bw() + theme(legend.position = "none") -->
+<!-- ``` -->
 
-Let's make a function to run a classical randomized experiment.
+<!-- Let's make a function to run a classical randomized experiment. -->
 
-```{r, fig.align="center"}
-classic_experiment <- function(n=100){
-  tibble(Y0 = rnorm(n), Y1 = Y0 + 1) %>% # true treatment effect is set to 1
-    # simple random assignment: each subject has an identical probability of being treated
-    mutate(D = sample(c(0, 1), n, replace = TRUE, prob = c(.5, .5))) %>%
-    
-    # if you want complete random assignment: exactly N_1 of N units are treated with equal probability
-    # mutate(D = sample(rep(c(0, 1), each = n()/2), n(), replace = FALSE)) %>% 
-    
-    mutate(Y = if_else(D == 1, Y1, Y0)) %>% # observed outcome
-    summarize(estimand = mean(Y1 - Y0), # our goal: average treatment effect (ATE)
-              estimate = mean(Y[D == 1]) - mean(Y[D == 0]), # estimator: difference-in-means
-              bias = estimate-estimand) %>% # bias of one particular experiment
-    as_vector()
-}
-classic_experiment(n=1000) # run an experiment
-```
+<!-- ```{r, fig.align="center"} -->
+<!-- classic_experiment <- function(n=100){ -->
+<!--   tibble(Y0 = rnorm(n), Y1 = Y0 + 1) %>% # true treatment effect is set to 1 -->
+<!--     # simple random assignment: each subject has an identical probability of being treated -->
+<!--     mutate(D = sample(c(0, 1), n, replace = TRUE, prob = c(.5, .5))) %>% -->
 
-Recall that DiM is our "estimator". Let's check if our estimator DiM is unbiased for ATE: let's calculate $\E[\text{DiM - ATE}]$ with 1000 experiments.
+<!--     # if you want complete random assignment: exactly N_1 of N units are treated with equal probability -->
+<!--     # mutate(D = sample(rep(c(0, 1), each = n()/2), n(), replace = FALSE)) %>%  -->
 
-```{r}
-mean(replicate(1000, classic_experiment(n=100), simplify=TRUE)[3, ]) # if [mean of bias]=0, then unbiased
-```
+<!--     mutate(Y = if_else(D == 1, Y1, Y0)) %>% # observed outcome -->
+<!--     summarize(estimand = mean(Y1 - Y0), # our goal: average treatment effect (ATE) -->
+<!--               estimate = mean(Y[D == 1]) - mean(Y[D == 0]), # estimator: difference-in-means -->
+<!--               bias = estimate-estimand) %>% # bias of one particular experiment -->
+<!--     as_vector() -->
+<!-- } -->
+<!-- classic_experiment(n=1000) # run an experiment -->
+<!-- ``` -->
 
-The sampling distribution (the hypothetical distribution under repeated sampling) of our estimator with 1,000 repetition DiM looks like:
+<!-- Recall that DiM is our "estimator". Let's check if our estimator DiM is unbiased for ATE: let's calculate $\E[\text{DiM - ATE}]$ with 1000 experiments. -->
 
-```{r, echo=FALSE, warning=FALSE, fig.align="center"}
-# sampling distribution of our estimates
-samp_dist <- replicate(1000, classic_experiment(n=100), simplify=TRUE)[2,] # pull estimates only
-ggplot(as_tibble(samp_dist), aes(x=value)) +
-  geom_density(aes(y=..density..)) + geom_vline(xintercept=1, linetype="dashed") + 
-  labs(title="Sampling Distribution of DiM Estimator", x="Estimates")+
-  theme_minimal()
-```
+<!-- ```{r} -->
+<!-- mean(replicate(1000, classic_experiment(n=100), simplify=TRUE)[3, ]) # if [mean of bias]=0, then unbiased -->
+<!-- ``` -->
 
-Another desirable property of any estimator is consistency ($\hat{\theta} \xrightarrow{p} \theta$). We expect that the **standard error** (the standard deviation of the sampling distribution) would decrease as sample size increases.
+<!-- The sampling distribution (the hypothetical distribution under repeated sampling) of our estimator with 1,000 repetition DiM looks like: -->
 
-```{r, fig.align="center"}
-library(purrr)
-# we want to repeat 1000 experiment for various sample size
-# maybe we can use 1) for loop or 2) dplyr with `replicate` function or 3) `map()` method
+<!-- ```{r, echo=FALSE, warning=FALSE, fig.align="center"} -->
+<!-- # sampling distribution of our estimates -->
+<!-- samp_dist <- replicate(1000, classic_experiment(n=100), simplify=TRUE)[2,] # pull estimates only -->
+<!-- ggplot(as_tibble(samp_dist), aes(x=value)) + -->
+<!--   geom_density(aes(y=..density..)) + geom_vline(xintercept=1, linetype="dashed") +  -->
+<!--   labs(title="Sampling Distribution of DiM Estimator", x="Estimates")+ -->
+<!--   theme_minimal() -->
+<!-- ``` -->
 
-consist <- 10^c(1:4) %>% # get sampling distribution w/ r=1000 for n=10, 100, 1000, and 10000
-  set_names(paste("Size: ", 10^c(1:4), sep="")) %>% # set names for each size
-  # `map_dfc()` store each of its results as column (map_df() stores results in rows)
-  # we will have a tibble with 4 columns, one for each sample size
-  map_dfc(function(n) replicate(100, classic_experiment(n)["estimate"]))
-head(consist, 5)
+<!-- Another desirable property of any estimator is consistency ($\hat{\theta} \xrightarrow{p} \theta$). We expect that the **standard error** (the standard deviation of the sampling distribution) would decrease as sample size increases. -->
 
-# let's plot
-consist %>% 
-  gather(key="Size", value="Estimate") %>% # make it a long format grouped by Size
-  ggplot(aes(x=Estimate, group=Size, col=Size)) +
-  geom_density(aes(y=..density..)) + 
-  geom_vline(xintercept=1, linetype="dashed") + # true ATE
-  labs(title="Sampling Distribution of DiM Estimator by Sample Size", x="Estimates") +
-  theme_minimal()
-```
+<!-- ```{r, fig.align="center"} -->
+<!-- library(purrr) -->
+<!-- # we want to repeat 1000 experiment for various sample size -->
+<!-- # maybe we can use 1) for loop or 2) dplyr with `replicate` function or 3) `map()` method -->
 
-<br>
+<!-- consist <- 10^c(1:4) %>% # get sampling distribution w/ r=1000 for n=10, 100, 1000, and 10000 -->
+<!--   set_names(paste("Size: ", 10^c(1:4), sep="")) %>% # set names for each size -->
+<!--   # `map_dfc()` store each of its results as column (map_df() stores results in rows) -->
+<!--   # we will have a tibble with 4 columns, one for each sample size -->
+<!--   map_dfc(function(n) replicate(100, classic_experiment(n)["estimate"])) -->
+<!-- head(consist, 5) -->
 
-**2. Check Covariate Balance**
+<!-- # let's plot -->
+<!-- consist %>%  -->
+<!--   gather(key="Size", value="Estimate") %>% # make it a long format grouped by Size -->
+<!--   ggplot(aes(x=Estimate, group=Size, col=Size)) + -->
+<!--   geom_density(aes(y=..density..)) +  -->
+<!--   geom_vline(xintercept=1, linetype="dashed") + # true ATE -->
+<!--   labs(title="Sampling Distribution of DiM Estimator by Sample Size", x="Estimates") + -->
+<!--   theme_minimal() -->
+<!-- ``` -->
 
-**Hint**: this relates to Q3, Pset2. 
+<!-- <br> -->
+
+### Check Covariate Balance
+<span style="color:maroon;">Hint</span>: this relates to Q3, Pset1. 
 
 ```{r warning=FALSE, message=FALSE}
 library(Matching) # assess balance 
 library(ebal) # making table
 
 data(lalonde)
+glimpse(lalonde)
 
 balance_obj = MatchBalance(treat ~ age + educ + black + hisp,
                            data = lalonde,
@@ -573,21 +519,22 @@ table_bal = baltest.collect(balance_obj,
 
 table_bal = table_bal[, c(1, 2, 6, 7)] # select things we care
 
-# mean.Tr, mean.Co <-- Treatment and control means
+# mean.Tr, mean.Co <-- treatment and control means
 # T pval, KS pval <-- p-values for t-test difference in means and KS test
 
 knitr::kable(table_bal, digits = 4) %>% kable_styling()
 ```
 
-Why should we check covariate balance? 
 
 <br>
 
-**3. Heteroskedasticity**
+### Heteroskedasticity-consistent SEs
 
-**Hint**: this relates to Q3, Pset2. 
+We have already covered the concepts in last week's refersher but here is a quick recap of how to do it in R. <span style="color:maroon;">Hint</span>: this relates to Q3, Pset1. 
 
 ```{r warning=FALSE, message=FALSE}
+set.seed(2025)
+
 X <- cbind(1, rnorm(100), runif(100, 0, 10))
 epsilon <- rnorm(100)
 true_beta = c(1, 2, 3)
@@ -595,13 +542,16 @@ Y <- X %*% true_beta + epsilon
 
 lm_res <- lm(Y ~ X-1)
 
-#1. Using `sandwich` package
+#1. Using the `sandwich` package
 library(sandwich)
 library(lmtest)
-coeftest(lm_res, vcov = vcovHC(lm_res, type = "HC2"))
-# we choose "HC2" for the standard error
+coeftest(lm_res, vcov = vcovHC(lm_res, type = "HC2")) # we choose "HC2"
 
-#2. Using `estimatr` package
+#2. Using the `estimatr` package
 library(estimatr)
 lm_robust(Y ~ X-1, se_type = "HC2")
 ```
+
+
+### Acknowledgement
+I develop this document based on materials from the previous TAs for PS 200C (including Doeun Kim,  Soonhong Cho, Luke Sonnet, Aaron Rudkin, Ciara Sterbenz).
