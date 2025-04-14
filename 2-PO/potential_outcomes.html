@@ -1915,7 +1915,7 @@ head(block_data, 15)</code></pre>
 ## 13 0013 -0.42096376       g     1
 ## 14 0014  0.76490961       a     0
 ## 15 0015  1.06616211       c     1</code></pre>
-<pre class="r"><code>tidy(lm_robust(Y ~ treat, data = block_data, fixed_effects = blockID))</code></pre>
+<pre class="r"><code>tidy(lm_robust(Y ~ treat, data = block_data, fixed_effects = ~ blockID))</code></pre>
 <pre><code>##    term   estimate  std.error statistic   p.value    conf.low conf.high  df
 ## 1 treat 0.08774725 0.06239786  1.406254 0.1599628 -0.03470016 0.2101947 989
 ##   outcome

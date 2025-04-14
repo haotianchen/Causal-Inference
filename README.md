@@ -11,8 +11,8 @@ TA Section: Every Friday 9:00-9:50 on Zoom, using [this link](https://ucla.zoom.
 - [Probability, Linear Algebra, and Regression Review](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/prob_matrix_review.html)
 - [Potential Outcomes and Randomized Experiments](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/2-PO/potential_outcomes.html)
 - [Selection on Observables (SOO)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/matching.html)
+- Directed Acyclic Graphs (DAGs): [Intro](https://mixtape.scunning.com/03-directed_acyclical_graphs) and [Examples](https://donskerclass.github.io/CausalEconometrics/DAGs.html) [No Section This Week!]
 - [Sensitivity Analysis](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/4-Sensitivity/sensitivity.html)
-- Directed Acyclic Graphs (DAGs): [Intro](https://mixtape.scunning.com/03-directed_acyclical_graphs) and [Examples](https://donskerclass.github.io/CausalEconometrics/DAGs.html)
 - Difference-in-Differences (DiD)
   + [Classical 2x2 DiD, TWFE, Synthetic Control](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/5-DID/DID.html)
   + [Recent Advancements in Generalized DiD](https://yiqingxu.org/packages/fect/05-panel.html)

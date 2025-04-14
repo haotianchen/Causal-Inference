@@ -434,7 +434,7 @@ block_data <- fabricate(
 
 head(block_data, 15)
 
-tidy(lm_robust(Y ~ treat, data = block_data, fixed_effects = blockID))
+tidy(lm_robust(Y ~ treat, data = block_data, fixed_effects = ~ blockID))
 ```
 
 <br>
