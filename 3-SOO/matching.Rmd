@@ -221,7 +221,7 @@ library(foreign)
 library(MatchIt)
 library(Matching)
 library(ebal) # entropy balancing
-library(cobalt) # love plots
+library(cobalt) # if you want to use love.plot()
 library(knitr)
 library(kableExtra)
 
@@ -412,11 +412,17 @@ balance_table_ps_match %>%
   kable_styling(full_width = F, position = "center")
 ```
 
+
 Alternatively, we can use the `MatchIt` package (which is a bit more user-friendly). Here's the code to implement the 1-on-1 nearest neighbor matching on the propensity score, with replacement: 
 
 ```{r}
-m_out_ps <- matchit(balance_formula, data = dat, method = "nearest", distance = "glm", replace = TRUE)
+m_out_ps <- matchit(balance_formula, data = dat, estimand = "ATT", 
+                    method = "nearest", ratio = 1,
+                    distance = "glm", link = "logit", replace = TRUE)
 m_out_ps
+summary(m_out_ps)
+
+head(match_data(m_out_ps, data = dat, distance = "prop.score")) # what the matched data looks like
 
 plot(summary(m_out_ps)) # love plot
 ```
@@ -462,6 +468,7 @@ Now use weights in regression:
 ```{r}
 summary(lm_robust(educ ~ abd, weight = IPW, data = dat))
 ```
+
 
 Alternatively, we can use the `WeightIt` package: 
 
