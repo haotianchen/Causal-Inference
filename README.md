@@ -5,13 +5,13 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 TA Section: Every Friday 9:00-9:50 on Zoom, using [this link](https://ucla.zoom.us/j/95665664817). I hold office hours after the TA section, from 10:00 to 12:00. 
 
 
-> Pset1 due April 18 by midnight! 
+> Pset3 due May 11 by midnight! No section on May 2! 
 
 ## TA Section Notes
 - [Probability, Linear Algebra, and Regression Review](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/1-Math/prob_matrix_review.html)
 - [Potential Outcomes and Randomized Experiments](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/2-PO/potential_outcomes.html)
 - [Selection on Observables (SOO)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/3-SOO/matching.html)
-- Directed Acyclic Graphs (DAGs): [Intro](https://mixtape.scunning.com/03-directed_acyclical_graphs) and [Examples](https://donskerclass.github.io/CausalEconometrics/DAGs.html) [No Section This Week!]
+- Directed Acyclic Graphs (DAGs): [Intro](https://mixtape.scunning.com/03-directed_acyclical_graphs) and [Examples](https://donskerclass.github.io/CausalEconometrics/DAGs.html)
 - [Sensitivity Analysis](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/4-Sensitivity/sensitivity.html)
 - Difference-in-Differences (DiD)
   + [Classical 2x2 DiD, TWFE, Synthetic Control](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/5-DID/DID.html)
