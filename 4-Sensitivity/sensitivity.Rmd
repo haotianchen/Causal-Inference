@@ -1,31 +1,30 @@
 ---
-title: '200C Section: Sensitivity Analysis'
-author: 'Haotian (Barney) Chen'
-date: May 17, 2024 
+title: "Pol Sci 200C Section: Sensitivity Analysis"
+author: "Haotian (Barney) Chen"
+date: "May 9, 2025" 
 output:
-  html_document: default
+  html_document:
+    math_method: mathjax
+    mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message=FALSE, warning=FALSE)
 ```
 
-I develop this document largely based on materials from the `sensemakr` package [website](https://carloscinelli.com/sensemakr/articles/sensemakr.html). I also refer to lecture slides by Chad Hazlett and Fan Li.  
+I develop this document largely based on materials from the `sensemakr` package [website](https://carloscinelli.com/sensemakr/articles/sensemakr.html). I also refer to lecture slides by Chad Hazlett, Fan Li, and Anton Strezhnev. 
 
 ## Sensitivity Analysis
 ***
 
 > Goal: had there were unmeasured confounders (omitted variables), what would happen?
 
-Recall that our two main assumptions are ignorability (unconfoundedness; exogeneity) and positivity. Can we test ignorability in observational studies? **No**. But there are some techniques (called falsification tests) to assess the imbalance:
+Recall that our two main assumptions are conditional ignorability and common support  Can we test ignorability in observational studies? **No**. But there are some techniques (called falsification tests) to assess the imbalance:
 
 - using placebo treatment/outcome that you know has null effect.
 - multiple control groups: comparing treated with control group A, and comparing treated with control group B.
 - using lagged outcomes (in panel data).
 
-Sensitivity analysis is not a test, but more of a check: how imbalanced does it have to be to sufficiently change the estimated treatment effect?
-
-### Rosenbaum and Rubin (1983) and Imbens (2003) 
-See lecture slides. 
+Sensitivity analysis is not a test, but more of a check. It provides a benchmark for the strength of the unobserved confounders. It won't fix anything -- it is for arguing. 
 
 ### Cinelli and Hazlett (2020)
 
@@ -33,12 +32,15 @@ Formal Setting:
 
 - Outcome $Y$, treatment $D$, observed (pre-treatment) covariates $X$, unobserved covariate(s) $Z$.
 - $R^2_{D \sim Z|X}$ is the partial $R^2$ from regressing $D$ on $Z$ controlling for $X$ (proportion of variance explained in $D$ by $Z$, after controlling for $X$). 
-- $R^2_{Y \sim Z|X,D}$ is the partial $R^2$ from regressing $Y$ on $Z$ controlling for $X$ and conditioning on $D$. 
+- $R^2_{Y \sim Z|X,D}$ is the partial $R^2$ from regressing $Y$ on $Z$ controlling for $X$ and conditioning on $D$.
+- $|\widehat{\text{bias}}| = \sqrt{ \frac{R^2_{Y \sim Z \mid X, D} \, R^2_{D \sim Z \mid X}}{1 - R^2_{D \sim Z \mid X}} \, \frac{\mathbb{V}\left(Y^{\perp \mathbf{x}, D} \right)}{\mathbb{V}\left(D^{\perp \mathbf{x}} \right)}}$. 
+
 
 We will use data on attitudes of Darfurian refugees in eastern Chad to estimate the effects of exposure to violence on attitudes towards peace. You can check the original Cinelli and Hazlett (2020) [paper](https://doi.org/10.1177/0022002719879217). 
 
 ```{r}
 library(sensemakr)
+
 data("darfur")
 # run ?darfur to check this dataset
 colnames(darfur)
@@ -46,10 +48,14 @@ colnames(darfur)
 
 The “treatment” variable of interest is `directlyharmed`, which indicates whether the individual was physically injured or maimed during the attack on her or his village in Darfur. The main outcome of interest is `peacefactor`, an index measuring pro-peace attitudes. ID strategy: SOO. The ID assumption is that, `directlyharmed` only depends on village and gender. 
 
+$$\text{PeaceIndex} = \hat{\tau}_{\text{res}} \text{DirectHarm} + \hat{\beta}_{f,\text{res}} \text{Female} + \text{Village} \hat{\beta}_{v,\text{res}} + \mathbf{X} \hat{\beta}_{\text{res}} + \hat{\varepsilon}_{\text{res}}$$
+
 ```{r}
 # run regression model
 darfur.model <- lm(peacefactor ~ directlyharmed + village + female + age + farmer_dar 
                    + herder_dar + pastvoted + hhsize_darfur, data = darfur)
+
+stargazer::stargazer(darfur.model, keep = "directlyharmed", type = "text")
 ```
 
 #### sensemakr Package
@@ -64,7 +70,6 @@ darfur.sensitivity <- sensemakr(model = darfur.model,
                                 q = 1,
                                 alpha = 0.05, 
                                 reduce = T)
-
 darfur.sensitivity
 ```
 
@@ -86,9 +91,10 @@ The arguments are:
 
 <br>
 
-We can get this nice table: 
+We get these statistics: 
 ```{r results = 'asis'}
-ovb_minimal_reporting(darfur.sensitivity, format = "html") 
+# sensitivity$sensitivity_stats
+ovb_minimal_reporting(darfur.sensitivity, format = "html")
 ```
 
 <br>
@@ -100,6 +106,12 @@ How should we interpret the results?
 - The robustness value (**RV**) for testing the null hypothesis that the coefficient of `directlyharmed` is zero ($RV_{q=1, \alpha=0.05}$) falls to 7.6\%. This means that unobserved confounders that explain 7.6\% of the residual variance both of the treatment and of the outcome are sufficiently strong to bring the lower bound of the confidence interval to zero (at the chosen significance level of 5\%). On the other hand, unobserved confounders that do not explain at least 7.6\% of the residual variance both of the treatment and of the outcome are not sufficiently strong to do so.
 
 - The partial $R^2$ of `directlyharmed` with `peacefactor` ($R^2_{Y \sim D|X}$) means that, in an extreme scenario, in which we assume that unobserved confounders explain all of the left out variance of the outcome, these unobserved confounders would need to explain at least 2.2\% of the residual variance of the treatment to bring the estimated effect down to zero. 
+
+You can get these from running:
+
+```{r}
+summary(darfur.sensitivity)
+```
 
 
 #### Plots
