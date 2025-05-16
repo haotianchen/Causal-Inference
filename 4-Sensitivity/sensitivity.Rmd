@@ -18,7 +18,7 @@ I develop this document largely based on materials from the `sensemakr` package 
 
 > Goal: had there were unmeasured confounders (omitted variables), what would happen?
 
-Recall that our two main assumptions are conditional ignorability and common support  Can we test ignorability in observational studies? **No**. But there are some techniques (called falsification tests) to assess the imbalance:
+Recall that our two main assumptions are conditional ignorability and common support. Can we test ignorability in observational studies? **No**. But there are some techniques (called falsification tests) to assess the imbalance:
 
 - using placebo treatment/outcome that you know has null effect.
 - multiple control groups: comparing treated with control group A, and comparing treated with control group B.
