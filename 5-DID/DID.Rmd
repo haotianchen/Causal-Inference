@@ -1,27 +1,28 @@
 ---
-title: "200C Section: Difference in Differences (and Synthetic Control)"
+title: "Pol Sci 200C Section: Difference in Differences (and Synthetic Control)"
 author: "Haotian (Barney) Chen"
-date: "May 24, 2024" 
+date: "May 16, 2025" 
 output:
-  html_document: default
+  html_document:
+    math_method: mathjax
+    mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = 'center')
 ```
+
 \newcommand{\y}{\mathbf{y}}
 \newcommand{\X}{\mathbf{X}}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-I develop this document based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. For better visualization of the tables, see this file in the HTML format. 
 
 ## Difference-in-Differences
 
 ***
-
-The key idea of DiD is comparing the changes over time (pre-treatment vs. post-treatment) in the treated group to the changes over time (pre-treatment vs. post-treatment) in the control group. **Hint**: this whole section relates to Pset 4, Q1.
+The key idea of DiD is comparing the changes over time (pre-treatment vs. post-treatment) in the treated group to the changes over time (pre-treatment vs. post-treatment) in the control group. 
 
 ```{r, echo=FALSE}
 library(haven)
@@ -38,18 +39,14 @@ tibble(Time = rep(c(1, 2), 3),
   geom_line() +
   geom_vline(xintercept=1.5, linetype="dashed", col="gray") +
   scale_color_manual(values = c("1"="black", "2"="red", "3"="red"), 
-                     labels = c("Control", 
-                                "Counterfactual trajectory \n of treated in the \n absence of treatment",
-                                "Treated")) +
+                     labels = c("Control", "Counterfactual trajectory", "Treated")) +
   scale_linetype_manual(values = c("1"= "solid", "2"="dotted", "3"="solid"), 
-                        labels = c("Control", 
-                                "Counterfactual trajectory \n of treated in the \n absence of treatment",
-                                "Treated")) +
+                        labels = c("Control", "Counterfactual trajectory", "Treated")) +
   scale_x_discrete(limits = c("1", "2"), labels=c("1"="Pre-treatment", "2"="Post-treatment")) +
   labs(y="Expected Outcome") +
   theme_bw() +
   theme(axis.text.x = element_text(face="bold", size=12),
-        legend.text=element_text(size=12),
+        legend.text = element_text(size=12),
         legend.spacing.y = unit(.5, 'cm')) +
   guides(color = guide_legend(byrow = TRUE))
 ```
@@ -63,9 +60,9 @@ In a standard (2*2) setting, suppose we write the potential outcomes as $Y_{D}(T
 | Treated | $\E[Y_0(0)|D = 1]$ (A) | $\E[Y_1(1)|D = 1]$ (B)|
 | Control | $\E[Y_0(0)|D = 0]$ (C) | $\E[Y_0(1)|D = 0]$ (D)|
 
- - Identification assumption: **parallel trends**, $\E[Y_0(1)-Y_0(0)|D = 0] = \E[Y_0(1)-Y_0(0)|D = 1]$.  
- - Estimand: ATT, which is $\E[Y_1(1)-Y_0(1)|D = 1]$. We can write it as: (B-A) - (D-C). 
- - What is missing? $\E[Y_0(1)|D = 1]$. Again, the fundamental problem of casual inference.
+- Identification assumption: **parallel trends**, $\E[Y_0(1)-Y_0(0)|D = 0] = \E[Y_0(1)-Y_0(0)|D = 1]$.  
+- Estimand: ATT, which is $\E[Y_1(1)-Y_0(1)|D = 1]$. We can write it as: (B-A) - (D-C). 
+- What is missing? $\E[Y_0(1)|D = 1]$. Again, the fundamental problem of casual inference.
 
  $$
  \begin{aligned}
@@ -77,42 +74,42 @@ In a standard (2*2) setting, suppose we write the potential outcomes as $Y_{D}(T
  \end{aligned}
  $$
 
- - DiD estimator: $\E[Y_{itd}] = \beta_0 + \beta_1 \text{Treated}_d + \beta_2 \text{Post}_t + \beta_3 \text{Treated}_d*\text{Post}_t$. $\beta_3$ is the estimate, which is the interaction term in regression. We often set up two indicator variables, `post` = 1 if post-treatment period, `treat` = 1 if treated. Then we fit `lm_robust(Y ~ post*treat)`, and `post:treat` is the ATT estimate. 
+- DiD estimator: $\E[Y_{itd}] = \beta_0 + \beta_1 \text{Treated}_d + \beta_2 \text{Post}_t + \beta_3 \text{Treated}_d*\text{Post}_t$. $\beta_3$ is the estimate, which is the interaction term in regression. We often set up two indicator variables, `post` = 1 if post-treatment period, `treat` = 1 if treated. Then we fit `lm_robust(Y ~ post*treat)`, and `post:treat` is the ATT estimate. 
  
 |         |    Pre-Period (T=0)    |   Post-Period (T=1)   |    Difference   |
 |---------|------------------------|-----------------------|-----------------------|
 | Treated |  $\beta_0 + \beta_1$   | $\beta_0 + \beta_1 + \beta_2 + \beta_3$ | $\beta_2 + \beta_3$ |
 | Control |  $\beta_0$             | $\beta_0 + \beta_2$   |  $\beta_2$   |
 
- - That is, $\beta_3$ is the difference in the differences ($\beta_2 + \beta_3$ and $\beta_2$).  
- - General advice: cluster SEs at least at the unit level. 
+- That is, $\beta_3$ is the difference in the differences ($\beta_2 + \beta_3$ and $\beta_2$).  
+- General advice: cluster SEs at least at the unit level. 
  
 <br>
 
-Here's an animation of how it works intuitively:
-<br>
+How it works:
 
-<p align="center">
-![ ](did.gif)
-</p>
+```{r, echo=FALSE, out.width='70%'}
+knitr::include_graphics("did.gif")
+```
 (Credit: Apoorva Lal and Nick Huntington-Klein)
 
  <br>
 
 ### DiD Coding Example
 ***
- - **Malesky et al. 2014. The Impact of Recentralization on Public Services: A Difference-in-Differences Analysis of the Abolition of Elected Councils in Vietnam. APSR** ([2014](https://www.cambridge.org/core/journals/american-political-science-review/article/abs/impact-of-recentralization-on-public-services-a-differenceindifferences-analysis-of-the-abolition-of-elected-councils-in-vietnam/3477854BAAFE152DC93C594169D64F58))
 
- - Question: does (re)centralization improve local public service? How the abolition of local elected councils (= decentralization) affects local public services in Vietnam?
+**Malesky et al. 2014. The Impact of Recentralization on Public Services: A Difference-in-Differences Analysis of the Abolition of Elected Councils in Vietnam. APSR** ([Link](https://www.cambridge.org/core/journals/american-political-science-review/article/abs/impact-of-recentralization-on-public-services-a-differenceindifferences-analysis-of-the-abolition-of-elected-councils-in-vietnam/3477854BAAFE152DC93C594169D64F58))
+
+- Question: does (re)centralization improve local public service? How the abolition of local elected councils (= decentralization) affects local public services in Vietnam?
  
- - In Vietnam, District People's Councils (DPC) have been devices for decentralization: political, administrative and fiscal authorities of local governments were shifted to elected local councils. But, in 2009, Vietnamese political leaders piloted a removal of DPC in 99 districts across the country (so really a social quasi-experiment!)
+- In Vietnam, District People's Councils (DPC) have been devices for decentralization: political, administrative and fiscal authorities of local governments were shifted to elected local councils. But, in 2009, Vietnamese political leaders piloted a removal of DPC in 99 districts across the country (so really a social quasi-experiment!)
  
- - The authors utilize the basic (2-periods) DiD design to study how the abolition of elected councils
+- The authors utilize the basic (2-periods) DiD design to study how the abolition of elected councils
 affects local public services.
 
- - The DiD estimator with covariates (following Chad's notation) is: $$Y = \mu + \gamma D + \delta T + \tau (D \cdot  T) + X^T\beta + \epsilon,$$ where $D$ is the (eventually) treated units indicator (1 for communes that had their DPCs abolished, 0 otherwise), $T$ is post-treatment period indicator (1 for 2010, 0 for  2008; treatment strated in 2009), $X$ is (time-invariant) covariates, and $\tau$ is our quantity of interest.
+- The DiD estimator with covariates (following Chad's notation) is: $$Y = \mu + \gamma D + \delta T + \tau (D \cdot  T) + X^T\beta + \epsilon,$$ where $D$ is the (eventually) treated units indicator (1 for communes that had their DPCs abolished, 0 otherwise), $T$ is post-treatment period indicator (1 for 2010, 0 for  2008; treatment strated in 2009), $X$ is (time-invariant) covariates, and $\tau$ is our quantity of interest.
 
-```{r}
+```{r echo=FALSE}
 ## data cleaning
 data_06_08 <- read_dta("Malesky_et_al_2014/panel_commune_2006_2008.dta")
 data_08_10 <- read_dta("Malesky_et_al_2014/panel_commune_2008_2010.dta")
@@ -168,7 +165,7 @@ malesky2014 <- data_all %>%
  <br>
 
 #### Replicate main results (Table 2)
- - Variables:
+- Variables:
     + `outcome variables` ($Y$): There are 30 outcome variables to measure local public services. For example, `transport` is a binary variable, the response to the question "Is there a passenger bus line, train or water transport that passes through the village?" `pro4` (Education and Cultural Program) is a binary variable, the response to the question "Is there the  following project in the commune?: Investment on culture and education"
     + `post_treat` ($T$): "Time" variable in the paper; 1 if 2010, 0 for 2008. Treatment was implemented in 2009.
     + `treatment` ($D$): Treatment variable, 1 for communes that had their DPCs abolished, and 0 otherwise.
@@ -176,10 +173,15 @@ malesky2014 <- data_all %>%
     + `lnpopden`: Population of each commune.
     + `city`: Whether national-level city or not.
     + `reg8`: 8 regions, but one was excluded (Central Highlands) for security reasons. The models will contain regional fixed effects.
-  
- - We include the interaction term of $T$ and $D$ to get the treatment effect on local public service outcomes over time.
 
- - They clustered SEs by district AND provinces; but let's cluster at the treatment level, i.e., district. (Perhaps we could compute SEs through block-bootstrap at the district level.)
+- The data looks like this: 
+```{r}
+glimpse(malesky2014)
+```
+
+- We include the interaction term of $T$ and $D$ to get the treatment effect on local public service outcomes over time.
+
+- They clustered SEs by district AND provinces; but let's cluster at the treatment level, i.e., district. (Perhaps we could compute SEs through block-bootstrap at the district level.)
 
 ```{r, message=FALSE, warning=FALSE}
 # we only use 2008 and 2010 for analysis; 2006 data will be used to investigate parallel trends
@@ -198,14 +200,14 @@ lm_robust(pro4 ~ post_treat*treatment + lnarea + lnpopden + city + factor(reg8),
           data = data, clusters = id_dist) %>% tidy() %>% filter(term=="post_treat:treatment")
 ```
 
- - For example, all-year roads have grown about 8\% faster in the treatment than in the control group; Pubic transportation has grown 10\% faster; Education and cultural programs have grown 8\% faster. Re-centralization improved public service delivery at least in these areas.
+- For example, all-year roads have grown about 8\% faster in the treatment than in the control group; Pubic transportation has grown 10\% faster; Education and cultural programs have grown 8\% faster. Re-centralization improved public service delivery at least in these areas.
 
  <br>
 
 #### Visual Inspection of Parallel Trends Assumption
- - Since the validity of the DiD design rests on the parallel trend assumption, it is critical to evaluate its plausibility. It assumes that the change in $Y$ that would have happened in the treatment group in the absence of treatment is the same as the change in $Y$ in the control group. But the assumption is not empirically testable since it involves counterfactual outcomes.
+- Since the validity of the DiD design rests on the parallel trend assumption, it is critical to evaluate its plausibility. It assumes that the change in $Y$ that would have happened in the treatment group in the absence of treatment is the same as the change in $Y$ in the control group. But the assumption is not empirically testable since it involves counterfactual outcomes.
 
- - One simple way to investigate it is to simply visualize "trends" using data for prior periods (2006 data in this case) as a placebo test.
+- One simple way to investigate it is to simply visualize "trends" using data for prior periods (2006 data in this case) as a placebo test.
 
 ```{r, message=FALSE, warning=FALSE}
 malesky2014 <- malesky2014 %>% mutate(group=as.factor(ifelse(treatment==1, "Treat", "Control")))
@@ -229,29 +231,22 @@ trend_plot(data=malesky2014, outcome = quo(pro4)) # Education and Cultural Progr
 ```
 
  <br>
- <br>
 
 ## Synthetic Controls (Optional)
 
 ***
- - Motivation: say we have one unit treated and many control units. 
- 
- - Synthetic control method: introduced by Abadie, Diamond, and Hainmueller (2010). The intuition is that we construct a hypothetical control by choosing a weighted average of the existing control units. The weights are computed so that the pre-treatment outcome of the "synthetic" control matches the pre-treatment outcomes and covaruates.
+- Motivation: say we have one unit treated and many control units. 
+- Synthetic control method: introduced by Abadie, Diamond, and Hainmueller (2010). The intuition is that we construct a hypothetical control by choosing a weighted average of the existing control units. The weights are computed so that the pre-treatment outcome of the "synthetic" control matches the pre-treatment outcomes and covaruates.
 
 ### Synthetic Controls Coding Example
- - We'll use `Synth` package. Jens Hainmueller has made a [short viedo](https://web.stanford.edu/~jhain/Video/SynthDemo.mp4) to introduce the synthetic control method. 
- 
- - The empirical exampleis a dataset of Spanish regional economic development (Abadie and Gardeazabal [2003](https://www.aeaweb.org/articles?id=10.1257/000282803321455188)). 
- 
- - Question: does violent conflict harm economic development?
- 
- - Variables: 
+- We'll use `Synth` package. Check the [notes](https://j-hai.github.io/projects/2_project_scm/) by Jens Hainmueller. 
+- The empirical example is a dataset of Spanish regional economic development (Abadie and Gardeazabal [2003](https://www.aeaweb.org/articles?id=10.1257/000282803321455188)). 
+- Question: does violent conflict harm economic development?
+- Variables: 
      + Outcome ($Y$): GDP per capita.
      + Treatment ($D$): 1 (treated) if Basque Country which experienced political terrorism in the 1970s, 0 (control) other Spanish countries.
      + Treatment timing ($T$): 1 if in 1970-1997, 0 if in 1960-1969.
-     
- - A simple pre-post comparisons are problematic because it is unclear what other shocks might produce a change in trend; a diff-in-diff might seem appealing but it would be difficult to claim parallel trends and the control pool is too small to draw from.
- 
+- A simple pre-post comparisons are problematic because it is unclear what other shocks might produce a change in trend; a diff-in-diff might seem appealing but it would be difficult to claim parallel trends and the control pool is too small to draw from.
 
 ```{r}
 library(Synth)
@@ -285,7 +280,7 @@ unique(basque$regionname)
 model_1 <- synth(data.prep.obj = prepared_data, optimxmethod = "BFGS")
 ```
 
-"BFGS" is just a optimization algorithm (Broyden–Fletcher–Goldfarb–Shanno), which you'll see in MLE course again. We can see the weights given to the controls! So our control unit would be $$1.4\% \text{ Andalucia} + \cdots +3.8 \% \text{ Cataluna} + \cdots + 68.7\% \text{ Madrid} + \cdots.$$
+"BFGS" is just a optimization algorithm (Broyden–Fletcher–Goldfarb–Shanno), which you'll see in MLE (200D) course again. We can see the weights given to the controls! So our control unit would be $$1.4\% \text{ Andalucia} + \cdots +3.8 \% \text{ Cataluna} + \cdots + 68.7\% \text{ Madrid} + \cdots.$$
 
 We can plot the trajectories of treated and control groups, matching on pre-treatment outcomes.
 
@@ -400,4 +395,7 @@ ggplot(plot_data2, aes(x=years, y = treated)) +
 ```
 
 Here, we see an even more pronounced effect on a model that we think might be better identified: because it allows for more pre-treatment information (from covariates) to construct the synthetic controls, which can be seen in the better trajectory balance between treated and synthetic control. We've learned that a long running regional civil war is bad for economic development.
+
+### Acknowledgement
+I develop this document referencing to materials from Soonhong Cho, the previous TA for PS 200C.
 
