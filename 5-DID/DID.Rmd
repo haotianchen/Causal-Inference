@@ -30,6 +30,7 @@ library(tidyverse)
 library(estimatr)
 library(knitr)
 library(gridExtra)
+library(kableExtra)
 
 tibble(Time = rep(c(1, 2), 3),
        Group = as.factor(rep(c(1, 2, 3), each=2)),
@@ -55,16 +56,28 @@ tibble(Time = rep(c(1, 2), 3),
 
 In a standard (2*2) setting, suppose we write the potential outcomes as $Y_{D}(T)$: 
 
-|         |    Pre-Period (T=0)    |   Post-Period (T=1)   |
+<!--|         |    Pre-Period (T=0)    |   Post-Period (T=1)   |
 |---------|------------------------|-----------------------|
 | Treated | $\E[Y_0(0)|D = 1]$ (A) | $\E[Y_1(1)|D = 1]$ (B)|
-| Control | $\E[Y_0(0)|D = 0]$ (C) | $\E[Y_0(1)|D = 0]$ (D)|
+| Control | $\E[Y_0(0)|D = 0]$ (C) | $\E[Y_0(1)|D = 0]$ (D)|-->
+
+```{r echo=FALSE}
+df1 <- data.frame(
+  Group = c("Treated", "Control"),
+  "Pre-Period (T=0)" = c("\\(\\mathbb{E}[Y_0(0) \\mid D = 1]\\) (A)", "\\(\\mathbb{E}[Y_0(0) \\mid D = 0]\\) (C)"),
+  "Post-Period (T=1)" = c("\\(\\mathbb{E}[Y_1(1) \\mid D = 1]\\) (B)", "\\(\\mathbb{E}[Y_0(1) \\mid D = 0]\\) (D)"),
+  check.names = FALSE)
+
+kable(df1, format = "html", escape = FALSE) %>%
+  kable_styling("striped", full_width = FALSE, position = "center") %>%
+  column_spec(2:3, width = "20em") 
+```
 
 - Identification assumption: **parallel trends**, $\E[Y_0(1)-Y_0(0)|D = 0] = \E[Y_0(1)-Y_0(0)|D = 1]$.  
 - Estimand: ATT, which is $\E[Y_1(1)-Y_0(1)|D = 1]$. We can write it as: (B-A) - (D-C). 
 - What is missing? $\E[Y_0(1)|D = 1]$. Again, the fundamental problem of casual inference.
 
- $$
+$$
  \begin{aligned}
  \tau_{ATT} 
  &= \E[Y_1(1)|D = 1] - \E[Y_0(1)|D = 1] \\
@@ -72,14 +85,27 @@ In a standard (2*2) setting, suppose we write the potential outcomes as $Y_{D}(T
  &= \{\E[Y_1(1)|D = 1] - \E[Y_0(0)|D = 1]\} - \{\E[Y_0(1)|D = 0] - \E[Y_0(0)|D = 0]\} \\
  &= \{\E[Y(1)|D = 1] - \E[Y(0)|D = 1]\} - \{\E[Y(1)|D = 0] - \E[Y(0)|D = 0]\} 
  \end{aligned}
- $$
+$$
 
 - DiD estimator: $\E[Y_{itd}] = \beta_0 + \beta_1 \text{Treated}_d + \beta_2 \text{Post}_t + \beta_3 \text{Treated}_d*\text{Post}_t$. $\beta_3$ is the estimate, which is the interaction term in regression. We often set up two indicator variables, `post` = 1 if post-treatment period, `treat` = 1 if treated. Then we fit `lm_robust(Y ~ post*treat)`, and `post:treat` is the ATT estimate. 
  
-|         |    Pre-Period (T=0)    |   Post-Period (T=1)   |    Difference   |
+<!--|         |    Pre-Period (T=0)    |   Post-Period (T=1)   |    Difference   |
 |---------|------------------------|-----------------------|-----------------------|
 | Treated |  $\beta_0 + \beta_1$   | $\beta_0 + \beta_1 + \beta_2 + \beta_3$ | $\beta_2 + \beta_3$ |
-| Control |  $\beta_0$             | $\beta_0 + \beta_2$   |  $\beta_2$   |
+| Control |  $\beta_0$             | $\beta_0 + \beta_2$   |  $\beta_2$   |-->
+
+```{r echo=FALSE}
+df2 <- data.frame(
+  Group = c("Treated", "Control"),
+  "Pre-Period (T=0)" = c("$$\\beta_0 + \\beta_1$$", "$$\\beta_0$$"),
+  "Post-Period (T=1)" = c("$$\\beta_0 + \\beta_1 + \\beta_2 + \\beta_3$$", "$$\\beta_0 + \\beta_2$$"),
+  "Difference" = c("$$\\beta_2 + \\beta_3$$", "$$\\beta_2$$"), 
+  check.names = FALSE)
+
+kable(df2, format = "html", escape = FALSE) %>%
+  kable_styling("striped", full_width = FALSE, position = "center")
+```
+
 
 - That is, $\beta_3$ is the difference in the differences ($\beta_2 + \beta_3$ and $\beta_2$).  
 - General advice: cluster SEs at least at the unit level. 
@@ -176,7 +202,7 @@ malesky2014 <- data_all %>%
 
 - The data looks like this: 
 ```{r}
-glimpse(malesky2014)
+glimpse(malesky2014 %>% select(treatment, post_treat, goodroadv, transport, pro4, lnarea, lnpopden, city, reg8, id_dist))
 ```
 
 - We include the interaction term of $T$ and $D$ to get the treatment effect on local public service outcomes over time.
