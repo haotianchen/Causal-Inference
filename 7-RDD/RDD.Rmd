@@ -1,14 +1,17 @@
 ---
-title: "200C Section: Regression Discontinuity Design"
+title: "Pol Sci 200C Section: Regression Discontinuity Design"
 author: "Haotian (Barney) Chen"
-date: "May 31, 2024" 
+date: "May 30, 2025" 
 output:
-  html_document: default
+  html_document:
+    math_method: mathjax
+    mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = 'center')
 ```
+
 \newcommand{\y}{\mathbf{y}}
 \newcommand{\X}{\mathbf{X}}
 \newcommand{\Z}{\mathbf{Z}}
@@ -16,22 +19,22 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = 'center')
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-I develop this document based on materials from Soonhong Cho, the previous TA for PS 200C. 
 
 ## Regression Discontinuity Design
 ***
 
- - Sharp RDD: find a fixed cutoff point $c$ of a running (forcing) variable $X$ which determines the treatment assignment such that $D_i = \mathbf{1}_{\{X_i \geq c\}}$. If $D_i$ is only probabilistically (not **completely**) determined, it's called "fuzzy" RDD. **Hint**: this whole section relates to Pset 4, Q3.
+- Sharp RDD: find a fixed cutoff point $c$ of a running (forcing) variable $X$ which determines the treatment assignment such that $D_i = \mathbf{1}_{\{X_i \geq c\}}$. If $D_i$ is only probabilistically (not **completely**) determined, it's called "fuzzy" RDD. 
  
- - Example 1: close elections as RD design
+- Example 1: close elections as RD design
      + Running variable ($X_i$) is the Democratic vote margin for district $i$.
      + Treatment ($D_i$) is winning the current election at $t$, so vote margin $c = 0$ (e.g., being an "incumbent" party/candidate for the next election at $t+1$).
      + Outcome ($Y_i$). For example, if we're interested in incumbency effect, then outcome is winning probability or vote share in the next election at $t+1$.
      + The "discontinuity" at the cutoff point is our estimate.
+     + Read Chad's [paper](https://resolve.cambridge.org/core/journals/political-analysis/article/seeing-like-a-district-understanding-what-closeelection-designs-for-leader-characteristics-can-and-cannot-tell-us/77782269233D983FD37019E7A82189CB) on politician characteristic regression discontinuity.  
 
- - Example 2: How Did Absentee Voting Affect the 2020 U.S. Election? Yoder et al. (2021) 
+- Example 2: How Did Absentee Voting Affect the 2020 U.S. Election? Yoder et al. (2021) 
      + Setting: 65-year-olds can vote-by-mail without an excuse, while 64-year-olds must provide an excuse to vote absentee.
-     + What is the running variable? What is the treatment? What is the outcome variable? 
+     + Exercise: What is the running variable? What is the treatment? What is the outcome variable? 
      + $Y_{iat} = \beta_t (\text{Age}=65)_{iat} + \delta_t + \epsilon_{iat}$, where $\beta_t$ is the gap between 65- and 64-year-olds, and $\delta_t$ is election fixed effects. 
  
 <p align="center">
@@ -42,27 +45,27 @@ I develop this document based on materials from Soonhong Cho, the previous TA fo
  
 ### Identification
 
- - Estimand: $\E[Y_{1i} - Y_{0i} \mid X_i=c]$
+- Estimand: $\E[Y_{1i} - Y_{0i} \mid X_i=c]$
  
- - Assumption: $\E[Y_{1i} \mid X_i=x]$ and $\E[Y_{0i} \mid X_i=x]$ are **<span style="color:red;">continuous</span>** in $X_i$ around the threshold $c$. It requires that the only change occurring at the cutoff is the shift in the treatment status.
-     + E.g., $Y_{1i}$: the Democratic vote share in the next election $t+1$, if a Democratic (Republican) candidate won the election in the current period $t$, $D_i=1$ ($D_i=0$). Democratic victory is treatment, GOP winning is control.
-     
+- Assumption: $\E[Y_{1i} \mid X_i=x]$ and $\E[Y_{0i} \mid X_i=x]$ are **<span style="color:red;">continuous</span>** in $X_i$ around the threshold $c$. It requires that the only change occurring at the cutoff is the shift in the treatment status.
+     + E.g., $Y_{1i}$: the Democratic vote share in the next election $t+1$, if a Democratic (Republican) candidate won the election in the current period $t$, $D_i=1$ ($D_i=0$). Democratic victory is the treatment, GOP winning is the control.
+
      + The continuity assumption can be written as $$\E[Y_{1i} \mid X_i=c] = \lim_{x \downarrow c} \E[Y_{1i} \mid X_i=x]$$ and $$\E[Y_{0i} \mid X_i=c] = \lim_{x \uparrow c} \E[Y_{0i} \mid X_i=x],$$ where the limit is taken from above/below the threshold $c$. It can also be written that the potential outcomes are the same for $c - \epsilon < X_i < c+\epsilon$ as $\epsilon$ goes to 0:$$\E[Y_{1i} \mid X_i=c] = \lim_{\epsilon \downarrow 0} \E[Y_{1i} \mid X_i = c + \epsilon, D_i=1]$$ and $$\E[Y_{0i} \mid X_i=c] = \lim_{\epsilon \uparrow 0} \E[Y_{0i} \mid X_i =c + \epsilon, D_i=0]$$
-     
+
      + It implies that there is no **discontinuous jump** in the conditional expectation function of each potential outcome. Or, we're assuming that the conditional expectation of potential outcomes at $c$ can be approximated well from one side rather than from both sides.
      
- - This "*Continuity-Based* Approach" to RD design is different from **local randomization** framework for RD design:
+- This "*Continuity-Based* Approach" to RD design is different from **local randomization** framework for RD design:
      + Treatment assignment is as-if random near the cutoff: $\{ Y_{1i}, Y_{0i} \independent D_i|X_i \approx c\}$.
      + Local randomization assumption near the threshold is stricter than the required continuity assumption. Within the window, the average potential outcomes must be **identical** below and above the threshold under local randomization, whereas continuity assumption does not require it.
      
  
- - Formally, LATE at $c$ can be identified under the continuity assumption:
+- Formally, LATE at $c$ can be identified under the continuity assumption:
  \begin{align*}
  \tau_{RDD} = \E[Y_{1i} - Y_{0i} \mid X_i=c] &= \lim_{x \downarrow c} \E[Y_{1i} \mid X_i=x] - \lim_{x \uparrow c} \E[Y_{0i} \mid X_i=x] \\
  &= \underbrace{\lim_{x \downarrow c} \E[Y_{i} \mid X_i=x]}_{\text{average just above }c} - \underbrace{\lim_{x \uparrow c} \E[Y_{i} \mid X_i=x]}_{\text{average just below }c}
  \end{align*}
 
- - High internal validity, poor external validity. 
+- High internal validity, poor external validity. 
  
  <br>
 
@@ -78,30 +81,32 @@ Parametric models:
 
 Non-parametric (local) models:
 
-   - In practice, we now rely mainly on more local, flexible models such as lowess or kernel smoothers.
+- In practice, we now rely mainly on more local, flexible models such as lowess or kernel smoothers.
 
-   - For example, for kernel estimation, we calculate (weighted) moving averages to estimate $\E[Y \mid X]$, with weighting (in certain way) each unit at each value of $X=x$.
-      + We're thinking of weighted means like $\widehat{\E[Y \mid X]} = \sum_{i=1}^n W_i(x) y_i$ subject to $\sum_{i} W_i(x)=1$. We typically use "kernel" function for weighting as $W_i(x) = \frac{K\left( \frac{x-x_i}{h} \right)}{\sum_{i=1}^n K\left( \frac{x-x_i}{h} \right)}$, with $h$ is called "bandwidth". 
+- For example, for kernel estimation, we calculate (weighted) moving averages to estimate $\E[Y \mid X]$, with weighting (in certain way) each unit at each value of $X=x$.
 
-      + Kernel function determines weighting scheme.
-        1. Uniform kernel: each unit is given equal weight.
-        2. Triangular kernel: farther units are given smaller weights, using linear distance.
-        3. Gaussian kernel: farther units are given less weight, according to normal density function.
-         
-      + We apply this idea to regression setting: $$(\hat{\alpha}_{+}, \hat{\beta}_{+}) = \underset{\alpha, \beta}{\text{argmin}} \sum_{i=1}^n \mathbf{1}\{ X_i > c\}\{Y_i - \alpha - (X_i-c)\beta\}^2 \cdot K \left( \frac{X_i-c}{h} \right),$$ and $$(\hat{\alpha}_{-}, \hat{\beta}_{-}) = \underset{\alpha, \beta}{\text{argmin}} \sum_{i=1}^n \mathbf{1}\{ X_i < c\}\{Y_i - \alpha - (X_i-c)\beta\}^2 \cdot K \left( \frac{X_i-c}{h} \right),$$ then $\hat{\tau}^{RD} = \hat{\alpha}_{+} - \hat{\alpha}_{-}.$
+  + We're thinking of weighted means like $\widehat{\E[Y \mid X]} = \sum_{i=1}^n W_i(x) y_i$ subject to $\sum_{i} W_i(x)=1$. We typically use "kernel" function for weighting as $W_i(x) = \frac{K\left( \frac{x-x_i}{h} \right)}{\sum_{i=1}^n K\left( \frac{x-x_i}{h} \right)}$, with $h$ is called "bandwidth". 
+  
+  + Kernel function determines weighting scheme.
+    1. Uniform kernel: each unit is given equal weight.
+    2. Triangular kernel: farther units are given smaller weights, using linear distance.
+    3. Gaussian kernel: farther units are given less weight, according to normal density function.
+    
+  + We apply this idea to regression setting: $$(\hat{\alpha}_{+}, \hat{\beta}_{+}) = \underset{\alpha, \beta}{\text{argmin}} \sum_{i=1}^n \mathbf{1}\{ X_i > c\}\{Y_i - \alpha - (X_i-c)\beta\}^2 \cdot K \left( \frac{X_i-c}{h} \right),$$ and $$(\hat{\alpha}_{-}, \hat{\beta}_{-}) = \underset{\alpha, \beta}{\text{argmin}} \sum_{i=1}^n \mathbf{1}\{ X_i < c\}\{Y_i - \alpha - (X_i-c)\beta\}^2 \cdot K \left( \frac{X_i-c}{h} \right),$$ then $\hat{\tau}^{RD} = \hat{\alpha}_{+} - \hat{\alpha}_{-}.$
         
-   - In practice, use `rdrobust` or `RDD` for automatic bandwidth selection for local polynomial models.
+- In practice, use `rdrobust` or `RDD` for automatic bandwidth selection for local polynomial models.
 
  <br>
- 
-Here's an animation of how it works intuitively:
-<p align="center">
-![ ](rdd.gif)
-</p>
+
+How it works:
+
+```{r, echo=FALSE, out.width='70%'}
+knitr::include_graphics("rdd.gif")
+```
 (Credit: Apoorva Lal and Nick Huntington-Klein)
 
- <br>
- 
+<br>
+
 ### RDD Coding Example
  
 - Incumbent-party advantage: what is the effect of the Democratic party winning a Senate seat on its vote share in the following election for that seat? See Cattaneo, Frandsen, and Titiunik ([2015](https://cattaneo.princeton.edu/papers/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf)) for details.
@@ -309,3 +314,6 @@ rdplot(data_rd$vote[data_rd$margin <= 0], data_rd$margin[data_rd$margin <= 0], c
 DCdensity(data_rd$margin, cutpoint = -30)
 summary(rdrobust(data_rd$vote[data_rd$margin <= 0], data_rd$margin[data_rd$margin <= 0], c=-30))
 ```
+
+### Acknowledgement
+I develop this document referencing to materials from Soonhong Cho, the previous TA for PS 200C.
