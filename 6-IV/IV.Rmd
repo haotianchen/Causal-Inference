@@ -1,14 +1,17 @@
 ---
-title: "200C Section: Instrumental Variables"
+title: "Pol Sci 200C Section: Instrumental Variables"
 author: "Haotian (Barney) Chen"
-date: "June 7, 2024" 
+date: "May 23, 2025" 
 output:
-  html_document: default
+  html_document:
+    math_method: mathjax
+    mathjax: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = 'center')
 ```
+
 \newcommand{\y}{\mathbf{y}}
 \newcommand{\X}{\mathbf{X}}
 \newcommand{\Z}{\mathbf{Z}}
@@ -16,16 +19,8 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, fig.align = 'center')
 \newcommand{\V}{\mathbb{V}}
 \newcommand{\independent}{\perp\!\!\!\perp}
 
-I develop this document based on materials from the previous TAs for PS 200C, Doeun Kim and Soonhong Cho. 
 
 ## Instrumental Variables
-
-Here's an animation of how it works intuitively:
-<br>
-<p align="center">
-![ ](iv.gif)
-</p>
-(Credit: Apoorva Lal and Nick Huntington-Klein)
 
 ### Potential outcomes for Instrumental Variable - Encouragement design
 ***
@@ -85,6 +80,15 @@ Here's an animation of how it works intuitively:
      1. Wald estimator: $\widehat{IV}_{Wald} = \frac{\widehat{\text{Cov}(Y_i, Z_i)}}{\widehat{\text{Cov}(D_i, Z_i)}} = \frac{\widehat{\text{ITT}}_Y}{\widehat{\text{ITT}}_D},$ so the reduced form divided by the first stage effect.
      
      2. 2-Stage Least Squares estimator: $\widehat{IV}_{2SLS} = \frac{\widehat{\text{Cov}(Y_i, Z_i) / Var(Z_i)}}{\widehat{\text{Cov}(D_i, Z_i)/Var(Z_i)}} = \frac{(Z'Z)^{-1}(Z'Y)}{(Z'Z)^{-1}(Z'D)} = (Z'D)^{-1}(Z'Y)$ 
+
+ <br>
+
+How it works:
+
+```{r, echo=FALSE, out.width='70%'}
+knitr::include_graphics("iv.gif")
+```
+(Credit: Apoorva Lal and Nick Huntington-Klein)
 
  <br>
 
@@ -302,3 +306,6 @@ round(summary(iv_estimatr)$coefficients["educ",], 4) #slightly larger SE
 ```
 
   - OLS and IV (2SLS) estimates (Table 5, columns 3 and 4): one more year of education is associated with an additional 7\% in weekly wages with OLS, but with 2SLS with IV it’s higher (7.6\%).
+
+### Acknowledgement
+I develop this document referencing to materials from Soonhong Cho, the previous TA for PS 200C.
