@@ -1,8 +1,6 @@
 # Causal Inference Notes
 
-Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered at UCLA in 2024 Spring, 2025 Spring. By Barney Chen. 
-
-TA Section: Every Friday 9:00-9:50 on Zoom, using [this link](https://ucla.zoom.us/j/95665664817). I hold office hours after the TA section, from 10:00 to 12:00. 
+Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett](https://www.chadhazlett.com/)) offered at UCLA in 2024 Spring, 2025 Spring, 2026 Spring. By Barney Chen.
 
 
 ## TA Section Notes
