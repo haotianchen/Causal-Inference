@@ -11,7 +11,7 @@ Materials for PhD-level Causal Inference course (Pol Sci 200C, by [Chad Hazlett]
 - [Sensitivity Analysis](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/4-Sensitivity/sensitivity.html)
 - Difference-in-Differences (DiD)
   + [Classical 2x2 DiD, TWFE, Synthetic Control](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/5-DID/DID.html)
-  + [Recent Advancements in Generalized DiD](https://yiqingxu.org/packages/fect/05-panel.html)
+  + [Recent Advancements in Generalized DiD](https://yiqingxu.org/packages/fect/09-panel.html)
 - [Instrumental Variables (IV)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/6-IV/IV.html)
 - [Regression Discontinuity Design (RDD)](https://htmlpreview.github.io/?https://github.com/haotianchen/Causal-Inference/blob/main/7-RDD/RDD.html)
 
